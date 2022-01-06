@@ -1,20 +1,22 @@
 <template>
   <div>
-    <Header></Header>
-    <div v-if="$store.state.login">
-      <NavRouter />
+    <div v-if="!$store.state.login&&['/','/login'].includes($route.path)">
+      <Header></Header>
+      <router-view />
     </div>
-    <router-view></router-view>
+    <div v-else>
+     <Layout />
+    </div>
   </div>
 </template>
 
 <script>
-import NavRouter from '@/components/NavRouter'
+import Layout from '@/layout'
 import Header from '@/components/Header'
 export default {
   components: {
-    NavRouter,
-    Header
+    Header,
+    Layout
   }
 }
 </script>
@@ -26,4 +28,5 @@ export default {
   box-sizing: border-box;
   font-size: 14px;
 }
+
 </style>

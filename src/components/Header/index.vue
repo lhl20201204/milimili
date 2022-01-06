@@ -26,6 +26,6 @@ export default {
 .header {
   background: black;
   color: white;
-  padding-left: 10px;
+  padding-left: 50px;
 }
 </style>
