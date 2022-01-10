@@ -15,25 +15,19 @@
 <script>
 import Triangle from '@/components/shape/Triangle'
 import GameItem from './game/GameItem.vue'
+import { ref } from 'vue'
 export default {
   components: { Triangle, GameItem },
-  watch: {
-    show (a, b) {
-      console.log(a, b)
-    }
-  },
-  data () {
+  setup () {
+    const show = ref(false)
     return {
-      show: false,
+      show,
       list: [
         { name: '魂斗罗', path: 'hun_dou_luo' },
         { name: '弹一弹', path: 'tan_yi_tan' },
         { name: '俄罗斯方块', path: 'e_luo_s_fang_kuai' }
       ]
     }
-  },
-  created () {
-    console.log(this)
   }
 
 }

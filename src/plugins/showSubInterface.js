@@ -1,17 +1,18 @@
-import HoverGame from '@/views/Game/hoverViews/HoverGame'
-import { createVNode, render } from 'vue'
+// import HoverGame from '@/views/Game/hoverViews/HoverGame'
+import { createApp } from 'vue'
+import { appPlugins } from '../appPlugins'
+import 'ant-design-vue/dist/antd.css'
 export function getShowSubInterface (app) {
-  const map = new Map().set('HoverGame', HoverGame)
   const els = new Map()
-  return function showSubInterface (compName, isShow, el) {
+  return function showSubInterface (comp, isShow, el) {
     if (!els.get(el)) {
-      const vm = createVNode(map.get(compName))
-      vm.appContext = app._context
-      render(vm, el)
-      els.set(el, vm)
-      console.log(vm)
+      const instance = appPlugins.reduce((p, c) => {
+        return p.use(c)
+      }, createApp(comp)).mount(document.createElement('div'))
+      instance.appContext = app._context
+      el.appendChild(instance.$el)
+      els.set(el, instance)
     }
-    console.log(isShow)
     els.get(el).show = isShow
   }
 }

@@ -1,8 +1,11 @@
 import { createApp } from 'vue'
 import App from './App.vue'
-import router from './router'
-import store from './store'
-import plugins from './plugins'
-import Antd from 'ant-design-vue'
+// import router from './router'
+// import store from './store'
+// import Antd from 'ant-design-vue'
+// import plugins from './plugins'
+import { appPlugins } from './appPlugins'
 import 'ant-design-vue/dist/antd.css'
-createApp(App).use(store).use(router).use(Antd).use(plugins).mount('#app')
+appPlugins.reduce((p, c) => {
+  return p.use(c)
+}, createApp(App)).mount('#app')

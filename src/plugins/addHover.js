@@ -1,9 +1,9 @@
-export function addHover (el, compName) {
+export function addHover (el, comp) {
   el.style.position = 'relative'
   el.addEventListener('mouseenter', function () {
-    this.$showSubInterface(compName, true, el)
+    this.$showSubInterface(comp, true, el)
   }.bind(this))
   el.addEventListener('mouseleave', function () {
-    this.$showSubInterface(compName, false, el)
+    this.$showSubInterface(comp, false, el)
   }.bind(this))
 }

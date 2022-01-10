@@ -1,7 +1,7 @@
 <template>
 <div class="loginPage" :style="{
   minHeight: '276px',
-  height:`calc(100vh - ${formStyle.height})`
+  height: `calc(100vh - ${formStyle.height})`
   }">
  <a-card style="width: 500px">
    <a-form
@@ -42,24 +42,23 @@
 </template>
 <script>
 import { defineComponent, reactive, getCurrentInstance } from 'vue'
+import { useRouter } from 'vue-router'
 import { message } from 'ant-design-vue'
 import config from '@/config'
 export default defineComponent({
   setup () {
     const { proxy } = getCurrentInstance()
     const storage = sessionStorage // 可能会换sessionstorage待定
+    const router = useRouter()
     const onLogin = (username) => {
-      console.log('执行一次')
       const store = proxy.$root.$store
-      const router = proxy.$root.$router
       store.commit('changeLoginStatus', true)
       store.commit('changeUserStatus', username)
       router.push('/home')
       message.success(`${username}您好！欢迎登录milimili`)
     }
-    console.log(storage.getItem('rememberPassword'))
+
     if (storage.getItem('rememberPassword') && storage.getItem('currentUser')) {
-      console.log('跳转')
       onLogin(storage.getItem('currentUser'))
     }
     const formState = reactive({
@@ -69,7 +68,7 @@ export default defineComponent({
     })
 
     const formStyle = reactive({
-      height: config.navHeaderHeight
+      height: ((config.navHeaderHeight.slice(0, -2)) * 1 + (config.layoutContentPadding.slice(0, -2)) * 2 + (config.layoutFooterHeight.slice(0, -2)) * 1) + 'px'
     })
 
     const onFinish = values => {
