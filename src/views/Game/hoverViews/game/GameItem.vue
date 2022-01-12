@@ -19,8 +19,8 @@ export default defineComponent({
     const instance = getCurrentInstance()
     const axios = instance.appContext.config.globalProperties.$axios
     function goGame () {
-      if (this.$route.path !== '/' + props.item.path) {
-        this.$router.push('/' + props.item.path)
+      if (this.$route.path !== '/game/' + props.item.path) {
+        this.$router.push('/game/' + props.item.path)
       }
     }
     axios.get('http://localhost:80/api/getInfo').then(({ data }) => {

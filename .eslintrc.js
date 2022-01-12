@@ -11,6 +11,6 @@ module.exports = {
     parser: 'babel-eslint'
   },
   rules: {
-
+    'no-mixed-operators': 'off'
   }
 }

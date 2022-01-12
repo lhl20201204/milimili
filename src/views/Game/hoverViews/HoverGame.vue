@@ -23,9 +23,9 @@ export default {
     return {
       show,
       list: [
-        { name: '魂斗罗', path: 'hun_dou_luo' },
-        { name: '弹一弹', path: 'tan_yi_tan' },
-        { name: '俄罗斯方块', path: 'e_luo_s_fang_kuai' }
+        { name: '魂斗罗', path: 'hunDouLuo' },
+        { name: '弹一弹', path: 'tanYiTan' },
+        { name: '俄罗斯方块', path: 'eLuoSiFangKuai' }
       ]
     }
   }

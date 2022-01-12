@@ -1,5 +1,8 @@
 <template>
-  <div>upload </div>
+  <iframe src="http://20210311.cn3v.net/myHunDouLuo/" :style="{
+    width:'1000px',
+    height: '580px'
+    }"></iframe>
 </template>
 
 <script>

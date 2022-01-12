@@ -1,5 +1,6 @@
 <template>
   <div>game </div>
+  <router-view></router-view>
 </template>
 
 <script>
