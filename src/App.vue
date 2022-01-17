@@ -1,14 +1,11 @@
-<template>
-  <div>
-     <Layout />
-  </div>
-</template>
-
 <script>
 import Layout from '@/layout'
 export default {
   components: {
     Layout
+  },
+  render () {
+    return <Layout />
   }
 }
 </script>

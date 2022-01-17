@@ -18,11 +18,19 @@
 </template>
 <script>
 import { LeftCircleOutlined, RightCircleOutlined } from '@ant-design/icons-vue'
-import { defineComponent } from 'vue'
+import { defineComponent, onBeforeMount } from 'vue'
 export default defineComponent({
   components: {
     LeftCircleOutlined,
     RightCircleOutlined
+  },
+  setup (props) {
+    onBeforeMount(() => {
+      props.service.handle()
+    })
+    return {
+      hello: 'world'
+    }
   }
 })
 </script>

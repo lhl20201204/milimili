@@ -1,5 +1,5 @@
 <template>
-   <keep-alive><component :is="loading===0?loadingComp:loading===1?successComp:failComp"/></keep-alive>
+   <keep-alive><component :is="loading===0?loadingComp:loading===1?successComp:failComp" :res="res"/></keep-alive>
 </template>
 
 <script>
@@ -35,10 +35,13 @@ export default defineComponent({
   },
   setup (props) {
     const loading = ref(0)
+    const res = ref(null)
     if (props.promiseInstance instanceof Promise) {
-      props.promiseInstance.then(() => {
+      props.promiseInstance.then((res1) => {
+        res.value = res1
         loading.value = 1
-      }).catch(() => {
+      }).catch((rej1) => {
+        res.value = rej1
         loading.value = 2
       })
     } else if (props.promiseInstance instanceof Function) {
@@ -46,15 +49,18 @@ export default defineComponent({
       if (!(instance instanceof Promise)) {
         message.error('Loading组件内，返回的不是promise')
       } else {
-        instance.then(() => {
+        instance.then((res1) => {
+          res.value = res1
           loading.value = 1
-        }).catch(() => {
+        }).catch((rej1) => {
+          res.value = rej1
           loading.value = 2
         })
       }
     }
     return {
-      loading
+      loading,
+      res
     }
   }
 })

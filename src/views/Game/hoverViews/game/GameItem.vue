@@ -32,13 +32,15 @@ export default defineComponent({
     return {
       promiseInstance: axios.get(url),
       successComp: {
-        render () {
+        props: ['res'],
+        render (vue) {
+          console.log('successComp', vue.$props.res)
           return <img src={url} class="game_icon" />
         }
       },
       failComp: {
         render () {
-          return <span>错误</span>
+          return <img src={require('@/assets/error/error.default.jpeg')} class="game_icon" />
         }
       },
       goGame
