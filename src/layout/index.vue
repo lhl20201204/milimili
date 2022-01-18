@@ -1,8 +1,9 @@
 <template >
   <a-layout class="layout">
     <a-layout-header >
-      <span class="logo" >{{title}}</span>
+      <span class="logo" >{{title}}&nbsp;&nbsp;{{$store.state.userName}}</span>
       <a-menu
+        v-show="time >= 1 || (time === 0 && $route.path !== '/login')"
         v-model:selectedKeys="selectedKeys"
         theme="dark"
         mode="horizontal"
@@ -24,35 +25,52 @@
   </a-layout>
 </template>
 <script>
-import { defineComponent, reactive, ref, watch } from 'vue'
+import { defineComponent, reactive, ref, watch, getCurrentInstance, nextTick } from 'vue'
 
 import moment from 'moment'
 import config from '@/config'
 import { getAuthority } from '@/utils'
 import { useRoute } from 'vue-router'
+
 export default defineComponent({
   setup () {
-    const userAccess = localStorage.getItem('authority') || 'user' // 获取渲染权限
+    const instance = getCurrentInstance()
     const { routes } = config
-    const navRouter = []
-    for (const r of routes.filter(v => v.isNav)) {
-      if (getAuthority(r.access || 'user', userAccess)) {
-        navRouter.push(r)
-      }
-    }
+    const navRouter = reactive([])
     const route = useRoute()
     const pathRouter = navRouter.map(({ path }) => path)
     const state = reactive({
       activateIndex: pathRouter.findIndex(v => route.path.slice(1).startsWith(v))
     })
-    let time = 0
+
+    const hoverComp = (instance) => {
+      navRouter.filter(v => v.type === 'hover').forEach(element => {
+        const node = instance.refs[element.path][0].$el.nextElementSibling
+        instance.appContext.config.globalProperties.$addHover(node, element.hoverComp)
+      })
+    }
+
+    const time = ref(0)
+    let firstRender = false
     const unWatch = watch(
       () => route.path,
       (path) => { // 初始化路由索引
-        time++
-        state.activateIndex = pathRouter.findIndex(v => path.slice(1).startsWith(v))
-        if (time === 2) {
-          time = null
+        if (!firstRender && (time.value === 1 || (time.value === 0 && path !== '/login'))) {
+          const userAccess = sessionStorage.getItem('authority') || 'visitor' // 获取渲染权限
+          for (const r of routes.filter(v => v.isNav)) {
+            if (getAuthority(r.access || 'visitor', userAccess) && !navRouter.includes(r)) {
+              navRouter.push(r)
+            }
+          }
+          nextTick(() => {
+            const pathRouter = navRouter.map(({ path }) => path)
+            state.activateIndex = pathRouter.findIndex(v => path.slice(1).startsWith(v))
+            hoverComp(instance)
+          })
+          firstRender = true
+        }
+        time.value++
+        if (time.value === 2) {
           unWatch()
         }
       }
@@ -65,10 +83,12 @@ export default defineComponent({
           this.$router.push(targetPath)
         }
       }
+      const pathRouter = navRouter.map(({ path }) => path)
       state.activateIndex = pathRouter.findIndex(v => targetPath.slice(1).startsWith(v))
     }
 
     return {
+      time,
       state,
       goRoute,
       navRouter,
@@ -79,12 +99,6 @@ export default defineComponent({
       layoutFooterHeight: config.layoutFooterHeight,
       layoutContentPadding: config.layoutContentPadding
     }
-  },
-  mounted () {
-    this.navRouter.filter(v => v.type === 'hover').forEach(element => {
-      const node = this.$refs[element.path][0].$el.nextElementSibling
-      this.$addHover(node, element.hoverComp)
-    }) // 挂载hover组件
   }
 })
 </script>
@@ -102,7 +116,7 @@ export default defineComponent({
     color: white;
   }
   .ant-menu {
-  float: right;
+    float: right;
   }
 }
 

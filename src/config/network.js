@@ -1,3 +1,3 @@
-export default {
-  baseUrl: 'http://localhost:8080/'
+module.exports = {
+  baseUrl: 'http://localhost:7001/'
 }

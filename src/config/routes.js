@@ -13,6 +13,7 @@ const { HomeOutlined, UserOutlined, UploadOutlined, CrownOutlined, GoogleOutline
 
 export const routes = [
   { path: 'login' },
+  { path: 'register' },
   { title: '首页', isNav: true, path: 'home', icon: HomeOutlined },
   {
     title: '游戏中心',

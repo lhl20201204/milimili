@@ -1,4 +1,3 @@
-// import HoverGame from '@/views/Game/hoverViews/HoverGame'
 import { createApp } from 'vue'
 import { appPlugins } from '../appPlugins'
 import 'ant-design-vue/dist/antd.css'

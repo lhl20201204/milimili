@@ -31,10 +31,12 @@
 
     <a-form-item name="remember" :wrapper-col="{ offset: 8, span: 16 }">
       <a-checkbox v-model:checked="formState.remember">Remember me</a-checkbox>
+      <span class="register" @click="goRegister">没有账号现在去注册 <ArrowRightOutlined/> </span>
     </a-form-item>
 
     <a-form-item :wrapper-col="{ offset: 8, span: 16 }">
-      <a-button type="primary" html-type="submit">Submit</a-button>
+      <a-button type="primary" html-type="submit"
+      :disabled="formState.username === '' || formState.password === ''">Submit</a-button>
     </a-form-item>
   </a-form>
   </a-card>
@@ -45,8 +47,12 @@ import { defineComponent, reactive, getCurrentInstance } from 'vue'
 import { useRouter } from 'vue-router'
 import { message } from 'ant-design-vue'
 import config from '@/config'
+import { ArrowRightOutlined } from '@ant-design/icons-vue'
 export default defineComponent({
-  setup () {
+  components: {
+    ArrowRightOutlined
+  },
+  setup (props) {
     const { proxy } = getCurrentInstance()
     const storage = sessionStorage // 可能会换sessionstorage待定
     const router = useRouter()
@@ -55,7 +61,7 @@ export default defineComponent({
       store.commit('changeLoginStatus', true)
       store.commit('changeUserStatus', username)
       router.push('/home')
-      message.success(`${username}您好！欢迎登录milimili`)
+      message.success(`${username} 您好！欢迎登录milimili`)
     }
 
     if (storage.getItem('rememberPassword') && storage.getItem('currentUser')) {
@@ -71,10 +77,15 @@ export default defineComponent({
       height: ((config.navHeaderHeight.slice(0, -2)) * 1 + (config.layoutContentPadding.slice(0, -2)) * 2 + (config.layoutFooterHeight.slice(0, -2)) * 1) + 'px'
     })
 
-    const onFinish = values => {
+    const onFinish = async values => {
       const { username } = values
+      const { data } = await props.service.getLoginStatus(values)
+      if (!data || (typeof data.userId !== 'number')) {
+        return message.error('用户名或者密码错误')
+      }
       storage.setItem('rememberPassword', values.remember)
       storage.setItem('currentUser', username)
+      storage.setItem('authority', data.authority || '')
       onLogin(username)
     }
 
@@ -82,11 +93,16 @@ export default defineComponent({
       console.log('Failed:', errorInfo)
     }
 
+    const goRegister = () => {
+      router.push('/register')
+    }
+
     return {
       formStyle,
       formState,
       onFinish,
-      onFinishFailed
+      onFinishFailed,
+      goRegister
     }
   }
 
@@ -98,5 +114,14 @@ export default defineComponent({
    display: flex;
    justify-content: center;
    align-items: center;
+   .register{
+     float: right;
+     font-size:8px ;
+     color:#40a9ff;
+     &:hover {
+       color: #1890ff;
+     }
+   }
 }
+
 </style>
