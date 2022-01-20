@@ -9,9 +9,11 @@ export function useMiddleWare (proxyObject, middleWares, unProxyAttr, ctx) {
   middleWares = middleWares.map(v => v(ctx)).reverse()
   for (const attr of attrs) {
     const originMethod = proxyObject[attr]
+    const retMethod = middleWares.reduce((m, v) => v(m), originMethod)
+    retMethod.toString = () => originMethod
     Object.defineProperty(proxyObject, attr, {
       get () {
-        return middleWares.reduce((m, v) => v(m), originMethod)
+        return retMethod
       }
     })
   }

@@ -2,8 +2,7 @@ const config = require('./src/config/network')
 module.exports = {
   devServer: {
     open: true,
-    host: 'localhost',
-    port: 8080,
+    port: 9999,
     // 以上的ip和端口是我们本机的;下面为需要跨域的
     proxy: { // 配置跨域
       '/api': {

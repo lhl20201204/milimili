@@ -1,48 +1,39 @@
 <template>
   <div class="game_icon_parent"
        @click="goGame">
-   <Loading :promiseInstance="promiseInstance" :successComp="successComp" :failComp="failComp" />
-  <span>{{item.name}}</span>
+   <Loading :promise="promise" :successComp="successComp" :failComp="failComp" />
+  <span>&nbsp;&nbsp;{{item.name}}</span>
   </div>
 </template>
 
 <script>
-import { defineComponent, getCurrentInstance } from 'vue'
+import { defineComponent } from 'vue'
 import Loading from '@/components/Loading'
-import config from '@/config'
+import { getImg } from '@/service'
 export default defineComponent({
   components: {
     Loading
   },
   props: ['item'],
   setup (props) {
-    const instance = getCurrentInstance()
-    const axios = instance.appContext.config.globalProperties.$axios
     function goGame () {
       if (this.$route.path !== '/game/' + props.item.path) {
         this.$router.push('/game/' + props.item.path)
       }
     }
-    axios.get('http://localhost:80/api/getInfo').then(({ data }) => {
-      console.log(data)
-    }).catch(e => {
-      console.log(e)
-    })
-    const url = config.baseUrl + props.item.path
     return {
-      promiseInstance: axios.get(url),
-      successComp: {
+      promise: getImg({ path: props.item.path }),
+      successComp: ({
         props: ['res'],
         render (vue) {
-          console.log('successComp', vue.$props.res)
-          return <img src={url} class="game_icon" />
+          return <img v-src={vue.$props.res.data} class="game_icon" />
         }
-      },
-      failComp: {
+      }),
+      failComp: ({
         render () {
-          return <img src={require('@/assets/error/error.default.jpeg')} class="game_icon" />
+          return <img src={require('@/assets/error/error.default.jpeg')} class="game_icon"/>
         }
-      },
+      }),
       goGame
     }
   }

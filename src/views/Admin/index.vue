@@ -8,7 +8,7 @@ import { defineComponent, onBeforeMount } from 'vue'
 export default defineComponent({
   setup (props) {
     onBeforeMount(() => {
-      props.service.handle()
+
     })
   }
 })

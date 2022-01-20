@@ -1,3 +1,4 @@
+import config from '@/config'
 export function getAuthority (compAccess, userAccess) {
   if (!Array.isArray(compAccess)) {
     compAccess = compAccess.split(',')
@@ -13,4 +14,8 @@ export function getAuthority (compAccess, userAccess) {
     }
   }
   return false
+}
+
+export function getImgSrc (path) {
+  return config.baseUrl + 'getImg?path=' + path
 }

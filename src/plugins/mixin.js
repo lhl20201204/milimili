@@ -1,16 +1,9 @@
 export function mixin (App) {
   App.mixin({
-    props: ['service'],
+    inject: ['s'],
     created () {
-      const props = this.$props
-      if (props.service && (typeof props.service.setCtx === 'function')) {
-        props.service.setCtx(this)
-      }
-    },
-    mounted () {
-      const props = this.$props
-      if (props.service && (typeof props.service.setCtx === 'function')) {
-        props.service.setCtx(this)
+      if (this.s && (typeof this.s.setCtx === 'function')) {
+        this.s.setCtx(this)
       }
     }
   })

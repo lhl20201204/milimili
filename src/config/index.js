@@ -1,8 +1,10 @@
 import { routes } from './routes'
 import network from './network'
-import icons from './icons'
+import subRoute from './subRoute'
+import defaultComp from './defaultComp'
 export default {
-  ...icons,
+  ...defaultComp,
+  ...subRoute,
   ...network,
   title: 'milimili 弹幕网站',
   navHeaderHeight: '64px',

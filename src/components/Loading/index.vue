@@ -5,10 +5,10 @@
 <script>
 import { defineComponent, ref } from 'vue'
 import { message } from 'ant-design-vue'
-import config from '@/config'
+import { LoadingOutlined, WarningOutlined } from '@ant-design/icons-vue'
 export default defineComponent({
   props: {
-    promiseInstance: {
+    promise: {
       required: true,
       type: [Promise, Function],
       default: Promise.resolve(new Error('没有传promise实例'))
@@ -23,29 +23,29 @@ export default defineComponent({
     loadingComp: {
       type: [Object, Function],
       default () {
-        return config.LoadingOutlined
+        return LoadingOutlined
       }
     },
     failComp: {
       type: [Object, Function],
       default () {
-        return config.WarningOutlined
+        return WarningOutlined
       }
     }
   },
   setup (props) {
     const loading = ref(0)
     const res = ref(null)
-    if (props.promiseInstance instanceof Promise) {
-      props.promiseInstance.then((res1) => {
+    if (props.promise instanceof Promise) {
+      props.promise.then((res1) => {
         res.value = res1
         loading.value = 1
       }).catch((rej1) => {
         res.value = rej1
         loading.value = 2
       })
-    } else if (props.promiseInstance instanceof Function) {
-      const instance = props.promiseInstance()
+    } else if (props.promise instanceof Function) {
+      const instance = props.promise()
       if (!(instance instanceof Promise)) {
         message.error('Loading组件内，返回的不是promise')
       } else {

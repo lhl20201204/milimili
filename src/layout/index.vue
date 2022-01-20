@@ -140,6 +140,10 @@ element.style {
     opacity: 1;
     order: 1;
 }
+.ant-menu.ant-menu-dark :deep(.ant-menu-item){
+  z-index: 999;
+  background-color: #001529;
+}
  .ant-menu.ant-menu-dark :deep(.ant-menu-item-selected),
  .ant-menu.ant-menu-dark :deep(.ant-menu-item-selected){
    .anticon{
@@ -147,8 +151,8 @@ element.style {
     }
     background-color: white;
     color: black;
-    border-top-left-radius: 30px;
-    border-top-right-radius: 30px;
+    // border-top-left-radius: 30px;
+    // border-top-right-radius: 30px;
   }
 
   .ant-menu-dark.ant-menu-horizontal :deep(.ant-menu-item):not(.ant-menu-item-selected):hover {
@@ -167,8 +171,8 @@ element.style {
     }
     background-color: white;
     color: black;
-    border-top-left-radius: 30px;
-    border-top-right-radius: 30px;
+    // border-top-left-radius: 30px;
+    // border-top-right-radius: 30px;
   }
 
 </style>

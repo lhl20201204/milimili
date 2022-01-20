@@ -14,19 +14,16 @@
 
 <script>
 import Triangle from '@/components/shape/Triangle'
-import GameItem from './game/GameItem.vue'
+import GameItem from './GameItem.vue'
 import { ref } from 'vue'
+import config from '@/config'
 export default {
   components: { Triangle, GameItem },
   setup () {
     const show = ref(false)
     return {
       show,
-      list: [
-        { name: '魂斗罗', path: 'hunDouLuo' },
-        { name: '弹一弹', path: 'tanYiTan' },
-        { name: '俄罗斯方块', path: 'eLuoSiFangKuai' }
-      ]
+      list: config.hoverGameSubRoute
     }
   }
 

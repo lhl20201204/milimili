@@ -42,31 +42,38 @@
 </div>
 </template>
 <script>
-import { defineComponent, reactive } from 'vue'
+import { defineComponent, getCurrentInstance, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { ArrowLeftOutlined } from '@ant-design/icons-vue'
-// import { message } from 'ant-design-vue'
+import { message } from 'ant-design-vue'
 import config from '@/config'
 export default defineComponent({
   components: {
     ArrowLeftOutlined
   },
   setup (props) {
-    // const { proxy } = getCurrentInstance()
-    // const storage = sessionStorage // 可能会换sessionstorage待定
     const router = useRouter()
-
     const formState = reactive({
       username: '',
       password: ''
     })
-
+    const { provides } = getCurrentInstance()
     const formStyle = reactive({
       height: ((config.navHeaderHeight.slice(0, -2)) * 1 + (config.layoutContentPadding.slice(0, -2)) * 2 + (config.layoutFooterHeight.slice(0, -2)) * 1) + 'px'
     })
-
     const onFinish = async values => {
-      const { data } = await props.service.getRegisterStatus(values)
+      const { data } = await provides.s.getRegisterStatus(values)
+      if (!data) {
+        message.error('注册失败')
+      }
+      const condition = data.code && ('' + data.code)[0] === '2'
+      if (condition) {
+        formState.username = ''
+        formState.password = ''
+        message.success(data.msg)
+      } else {
+        message.error(data.msg)
+      }
     }
 
     const onFinishFailed = errorInfo => {

@@ -1,6 +1,6 @@
 export function addHover (el, comp) {
   if (!el || !el.style || !el.addEventListener) {
-    return console.error('挂在失败')
+    return console.error('挂载失败')
   }
   el.style.position = 'relative'
   el.addEventListener('mouseenter', function () {
