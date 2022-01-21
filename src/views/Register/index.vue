@@ -42,11 +42,12 @@
 </div>
 </template>
 <script>
-import { defineComponent, getCurrentInstance, reactive } from 'vue'
+import { defineComponent, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { ArrowLeftOutlined } from '@ant-design/icons-vue'
 import { message } from 'ant-design-vue'
 import config from '@/config'
+import s from '@/service/Register'
 export default defineComponent({
   components: {
     ArrowLeftOutlined
@@ -57,12 +58,11 @@ export default defineComponent({
       username: '',
       password: ''
     })
-    const { provides } = getCurrentInstance()
     const formStyle = reactive({
       height: ((config.navHeaderHeight.slice(0, -2)) * 1 + (config.layoutContentPadding.slice(0, -2)) * 2 + (config.layoutFooterHeight.slice(0, -2)) * 1) + 'px'
     })
     const onFinish = async values => {
-      const { data } = await provides.s.getRegisterStatus(values)
+      const { data } = await s.getRegisterStatus(values)
       if (!data) {
         message.error('注册失败')
       }

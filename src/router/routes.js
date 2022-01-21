@@ -1,5 +1,4 @@
 import config from '@/config'
-import middleware, { useMiddleWare } from '@/middleware'
 import { markRaw } from 'vue'
 
 const getSplitRoutes = (arr, parentPath = '', parentFile = '', isNested = true) => {
@@ -16,8 +15,7 @@ const getSplitRoutes = (arr, parentPath = '', parentFile = '', isNested = true) 
         redirect: routePath + '/' + (redirect.length > 0 ? redirect[0].path : childrenRoute[0].path)
       })
     }
-    const service = require('@/service/' + routeFile.split('/')[1]).default
-    useMiddleWare(service, middleware.checkMiddleWare, ['setCtx'], service) // 使用中间键，监听网络方法调用
+
     return [...prev, {
       path: isNested ? selfPath : routePath,
       name,
@@ -26,14 +24,13 @@ const getSplitRoutes = (arr, parentPath = '', parentFile = '', isNested = true) 
           return new Promise((resolve) => {
             import('@/views' + routeFile).then(res1 => {
               resolve({
-                provide: params,
                 render () {
                   return <res1.default />
                 }
               })
             })
           })
-        })(markRaw({ s: service }))
+        })(markRaw({ }))
       },
       children: nested ? childrenRoute : []
     }, ...(nested ? [] : childrenRoute)]

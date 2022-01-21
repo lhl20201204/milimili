@@ -1,12 +1,8 @@
-let ctx = null
+import { post } from '../index'
+
 const ret = {
-  ctx: null,
-  setCtx (x) {
-    ctx = x
-    ret.ctx = ctx
-  },
   async getRegisterStatus (params, resolve) {
-    resolve(await ctx.$post('/api/user/register', {
+    resolve(await post('/api/user/register', {
       account: params.username,
       pwd: params.password
     }))

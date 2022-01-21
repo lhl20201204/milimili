@@ -1,12 +1,7 @@
-let ctx = null
+
 const ret = {
-  ctx: null,
-  setCtx (x) {
-    ctx = x
-    ret.ctx = ctx
-  },
   handle () {
-    console.log('video', ctx)
+    console.log('video')
   }
 }
 export default ret

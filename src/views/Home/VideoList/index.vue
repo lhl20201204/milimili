@@ -5,17 +5,17 @@
 </template>
 
 <script>
-import { defineComponent, getCurrentInstance, onBeforeMount, reactive } from 'vue'
+import { defineComponent, onBeforeMount, reactive } from 'vue'
 import VideoListItem from './VideoListItem'
+import s from '@/service/Home'
 export default defineComponent({
   components: {
     VideoListItem
   },
   setup () {
     const videoList = reactive([])
-    const { provides } = getCurrentInstance()
     async function loadingVideoList () {
-      const { data } = await provides.s.getVideoList()
+      const { data } = await s.getVideoList()
       videoList.splice(0, videoList.length)
       videoList.splice(0, 0, ...data)
     }

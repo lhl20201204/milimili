@@ -43,12 +43,13 @@
 </div>
 </template>
 <script>
-import { defineComponent, getCurrentInstance, reactive } from 'vue'
+import { defineComponent, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { message } from 'ant-design-vue'
 import { useStore } from 'vuex'
 import config from '@/config'
 import { ArrowRightOutlined } from '@ant-design/icons-vue'
+import s from '@/service/Login'
 export default defineComponent({
   components: {
     ArrowRightOutlined
@@ -57,7 +58,6 @@ export default defineComponent({
     const storage = sessionStorage // 可能会换sessionstorage待定
     const router = useRouter()
     const store = useStore()
-    const { provides } = getCurrentInstance()
     const onLogin = (username) => {
       store.commit('changeLoginStatus', true)
       store.commit('changeUserStatus', username)
@@ -80,7 +80,7 @@ export default defineComponent({
 
     const onFinish = async values => {
       const { username } = values
-      const { data } = await provides.s.getLoginStatus(values)
+      const { data } = await s.getLoginStatus(values)
       if (!data || (typeof data.userId !== 'number')) {
         return message.error('用户名或者密码错误')
       }
