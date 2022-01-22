@@ -3,17 +3,34 @@
     <a-layout-header >
       <span class="logo" >{{title}}&nbsp;&nbsp;{{$store.state.userName}}</span>
       <a-menu
+       theme="dark"
+        mode="horizontal"
+        disabled
+      ><a-menu-item class="other-menu-item" :class="{
+          'other-menu-item-selected': state.activateIndex === -1,
+          'unique-menu-item-selected':  state.activateIndex === -1
+        }">其他页面</a-menu-item> </a-menu>
+        <!-- 处理导航栏折叠问题 -->
+      <a-menu
         v-show="time >= 1 || (time === 0 && $route.path !== '/login')"
         v-model:selectedKeys="selectedKeys"
         theme="dark"
         mode="horizontal"
         :style="{ lineHeight:navHeaderHeight}"
       >
-        <a-menu-item class="my-a-menu-item"  v-for="(item,index) in navRouter" :key="item.path" :class="{
-          'ant-menu-item-selected': index === state.activateIndex
-        }" @click="goRoute(item)"
+        <a-menu-item class="my-a-menu-item"  v-for="(item,index) in navRouter" :key="item.path"
+         :class="{
+           'white-font': item.unSelectable,
+           'other-menu-item': item.unSelectable,
+          'ant-menu-item-selected': index === state.activateIndex && !item.unSelectable,
+          'other-menu-item-selected': index === state.activateIndex && item.unSelectable,
+          'unique-menu-item-selected': index === state.activateIndex
+          }"
+        @click="goRoute(item)"
+        :disabled="item.unSelectable"
          :ref="item.path"><component :is="item.icon"></component>&nbsp;&nbsp;{{item.title}}</a-menu-item>
-      </a-menu>
+
+        </a-menu>
     </a-layout-header>
     <a-layout-content style="padding: 0 50px">
       <div :style="{ background: '#fff', padding: layoutContentPadding, minHeight: `calc(100vh - ${(navHeaderHeight.slice(0,-2))*1+(layoutFooterHeight.slice(0,-2))*1}px)` }" ><router-view/></div>
@@ -52,7 +69,7 @@ export default defineComponent({
 
     const time = ref(0)
     let firstRender = false
-    const unWatch = watch(
+    watch(
       () => route.path,
       (path) => { // 初始化路由索引
         if (!firstRender && (time.value === 1 || (time.value === 0 && path !== '/login'))) {
@@ -69,10 +86,10 @@ export default defineComponent({
           })
           firstRender = true
         }
+
         time.value++
-        if (time.value === 2) {
-          unWatch()
-        }
+        const pathRouter = navRouter.map(({ path }) => path)
+        state.activateIndex = pathRouter.findIndex(v => path.slice(1).startsWith(v))
       }
     )
 
@@ -83,8 +100,6 @@ export default defineComponent({
           this.$router.push(targetPath)
         }
       }
-      const pathRouter = navRouter.map(({ path }) => path)
-      state.activateIndex = pathRouter.findIndex(v => targetPath.slice(1).startsWith(v))
     }
 
     return {
@@ -140,37 +155,51 @@ element.style {
     opacity: 1;
     order: 1;
 }
+.ant-menu.ant-menu-dark :deep(.white-font){
+  color: rgba(255, 255, 255, 0.65) !important;
+}
 .ant-menu.ant-menu-dark :deep(.ant-menu-item){
-  z-index: 999;
   background-color: #001529;
 }
- .ant-menu.ant-menu-dark :deep(.ant-menu-item-selected),
- .ant-menu.ant-menu-dark :deep(.ant-menu-item-selected){
+ .ant-menu.ant-menu-dark :deep(.ant-menu-item-selected.unique-menu-item-selected),
+ .ant-menu.ant-menu-dark :deep(.ant-menu-item-selected.unique-menu-item-selected){
    .anticon{
       color: black;
     }
     background-color: white;
-    color: black;
+    color: black !important;
     // border-top-left-radius: 30px;
     // border-top-right-radius: 30px;
   }
 
-  .ant-menu-dark.ant-menu-horizontal :deep(.ant-menu-item):not(.ant-menu-item-selected):hover {
+  .ant-menu-dark.ant-menu-horizontal :deep(.ant-menu-item):not(.ant-menu-item-selected):not(.ant-menu-item-disabled):hover {
     .anticon{
-      color: black;
+      color: rgb(0, 21, 41);
     }
     background-color:whitesmoke;
-    color: black;
+    color: rgb(0, 21, 41);
     // border-top-left-radius: 30px;
     // border-top-right-radius: 30px;
   }
 
-  .ant-menu-dark.ant-menu-horizontal :deep(.ant-menu-item.ant-menu-item-selected):hover {
+  .ant-menu-dark.ant-menu-horizontal :deep(.ant-menu-item.other-menu-item.ant-menu-item-disabled):not(.other-menu-item-selected):hover {
+    background-color: rgb(0, 21, 41);
+  }
+  .ant-menu-dark.ant-menu-horizontal :deep(.other-menu-item-selected):hover,
+  .ant-menu-dark.ant-menu-horizontal :deep(.other-menu-item-selected) {
     .anticon{
-      color: black;
+      color: rgb(0, 21, 41);
     }
     background-color: white;
-    color: black;
+    color: rgb(0, 21, 41) !important;
+  }
+
+  .ant-menu-dark.ant-menu-horizontal :deep(.ant-menu-item.ant-menu-item-selected):not(.ant-menu-item-disabled):hover {
+    .anticon{
+      color: rgb(0, 21, 41);
+    }
+    background-color: white;
+    color: rgb(0, 21, 41);
     // border-top-left-radius: 30px;
     // border-top-right-radius: 30px;
   }

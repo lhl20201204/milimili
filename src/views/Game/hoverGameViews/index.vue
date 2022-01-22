@@ -32,7 +32,7 @@ export default {
 
 <style>
 .game_center_tip {
-  z-index: 200;
+  z-index: 1000;
   position: absolute;
   line-height: 14px;
   color: black;
@@ -44,6 +44,7 @@ export default {
   left: -60px;
   box-shadow: 1px 1px rgba(0, 0, 0, 0.5);
   border-radius: 5px;
+  cursor: pointer !important;
 }
 .tri {
   position: absolute;

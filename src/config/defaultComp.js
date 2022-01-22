@@ -1,7 +1,8 @@
 export default {
-  NotFound: ({
+  NotFound: (comp, classes) => ({
+    props: ['res'],
     render () {
-      return <img src={require('@/assets/error/network.error.png')} v-prefix/>
+      return comp ? <comp class={classes}><img src={require('@/assets/error/network.error.png')} v-prefix/> </comp> : <img src={require('@/assets/error/network.error.png')} v-prefix/>
     }
   })
 

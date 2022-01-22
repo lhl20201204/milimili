@@ -1,18 +1,18 @@
 <template>
    <div class="homePage">
       <Carousel />
-     <video-list />
+      <video-show />
    </div>
 </template>
 <script>
 
-import VideoList from './VideoList'
+import VideoShow from './VideoShow'
 import Carousel from './carousel'
 import { defineComponent } from 'vue'
 export default defineComponent({
   components: {
     Carousel,
-    VideoList
+    VideoShow
   },
   setup () {
     return {
@@ -22,7 +22,7 @@ export default defineComponent({
 </script>
 <style lang="less" scoped>
 .homePage {
-  padding: 0  150px;
+  padding: 0  100px;
   display: flex;
 }
 </style>

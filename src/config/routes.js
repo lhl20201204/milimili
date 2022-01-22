@@ -14,7 +14,13 @@ import { HomeOutlined, UserOutlined, UploadOutlined, CrownOutlined, GoogleOutlin
 export const routes = [
   { path: 'login' },
   { path: 'register' },
-  { title: '首页', isNav: true, path: 'home', icon: HomeOutlined },
+  { path: 'video' },
+  {
+    title: '首页',
+    isNav: true,
+    path: 'home',
+    icon: HomeOutlined
+  },
   {
     title: '游戏中心',
     isNav: true,
@@ -23,6 +29,7 @@ export const routes = [
     type: 'hover',
     hoverComp: markRaw(HoverGame),
     nested: false,
+    unSelectable: true,
     children: [
       { path: 'hunDouLuo' },
       { path: 'tanYiTan' },

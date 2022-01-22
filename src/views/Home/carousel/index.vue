@@ -36,7 +36,7 @@ export default defineComponent({
           return <img v-src={vue.$props.res.data} v-prefix/>
         }
       }),
-      failComp: config.NotFound,
+      failComp: config.NotFound(),
       carouselSubRoute: config.carouselSubRoute,
       getImg
     }
