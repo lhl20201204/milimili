@@ -81,7 +81,7 @@ export default defineComponent({
     const onFinish = async values => {
       const { username } = values
       const { data } = await s.getLoginStatus(values)
-      if (!data || (typeof data.userId !== 'number')) {
+      if (!data || (typeof data.userId !== 'string')) {
         return message.error('用户名或者密码错误')
       }
       storage.setItem('rememberPassword', values.remember)

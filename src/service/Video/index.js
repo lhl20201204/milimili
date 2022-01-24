@@ -1,7 +1,9 @@
-
+import { get } from '../index'
 const ret = {
-  handle () {
-    console.log('video')
+  getVideoDetailById (params) {
+    return get('/api/video/getVideoDetailById', {
+      params
+    })
   }
 }
 export default ret

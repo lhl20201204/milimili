@@ -19,3 +19,14 @@ export function getAuthority (compAccess, userAccess) {
 export function getImgSrc (path) {
   return config.baseUrl + 'getImg?path=' + path
 }
+
+export function fillId (id) {
+  if (!id) {
+    throw new Error('id不能为空')
+  }
+  id = id + ''
+  while (id.length < config.videoIdPrefixZero) {
+    id = '0' + id
+  }
+  return id
+}

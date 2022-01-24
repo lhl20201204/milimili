@@ -44,6 +44,9 @@ export default defineComponent({
   height: 100px;
   margin: 5px;
   border: 1px solid rgba(0, 0, 0, 0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .video-list-item-src {
