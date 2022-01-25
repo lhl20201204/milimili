@@ -2,9 +2,9 @@ import { routes } from './routes'
 import network from './network'
 import subRoute from './subRoute'
 import defaultComp from './defaultComp'
-import home from './home'
+import imageSrc from './imageSrc'
 export default {
-  ...home,
+  ...imageSrc,
   ...defaultComp,
   ...subRoute,
   ...network,

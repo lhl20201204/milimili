@@ -1,18 +1,17 @@
 <template>
   <div class="game_icon_parent"
        @click="goGame">
-   <Loading :promise="promise" :successComp="successComp" :failComp="failComp" />
+   <Image :src="item.path" classes="game_icon"/>
   <span>&nbsp;&nbsp;{{item.name}}</span>
   </div>
 </template>
 
 <script>
 import { defineComponent } from 'vue'
-import Loading from '@/components/Loading'
-import { getImg } from '@/service'
+import Image from '@/components/Image'
 export default defineComponent({
   components: {
-    Loading
+    Image
   },
   props: ['item'],
   setup (props) {
@@ -22,18 +21,6 @@ export default defineComponent({
       }
     }
     return {
-      promise: getImg({ path: props.item.path }),
-      successComp: ({
-        props: ['res'],
-        render (vue) {
-          return <img v-src={vue.$props.res.data} class="game_icon" />
-        }
-      }),
-      failComp: ({
-        render () {
-          return <img src={require('@/assets/error/error.default.jpeg')} class="game_icon"/>
-        }
-      }),
       goGame
     }
   }

@@ -1,8 +1,8 @@
-import { get } from '../index'
+import { post } from '../index'
 
 const ret = {
   async getVideoList () {
-    return get('/api/video/getList')
+    return post('/api/video/getList')
   }
 }
 export default ret

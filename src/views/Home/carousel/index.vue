@@ -10,35 +10,32 @@
         <right-circle-outlined />
       </div>
     </template>
-    <Loading v-for="item in carouselSubRoute" :promise="getImg({
-      path: item.path
-    })" :successComp="successComp" :failComp="failComp" :key="item.path"/>
+    <Image v-for="item in carouselSubRoute" :src="item.path" :directive="{
+      'v-prefix':''
+    }" :key="item.path"/>
   </a-carousel>
 </template>
 
 <script>
 import { LeftCircleOutlined, RightCircleOutlined } from '@ant-design/icons-vue'
-import Loading from '@/components/Loading'
+import Image from '@/components/Image'
 import { defineComponent } from 'vue'
 import config from '@/config'
-import { getImg } from '@/service'
 export default defineComponent({
   components: {
     LeftCircleOutlined,
     RightCircleOutlined,
-    Loading
+    Image
   },
   setup () {
     return {
       successComp: ({
-        props: ['res'],
         render (vue) {
-          return <img v-src={vue.$props.res.data} v-prefix/>
+          return <img v-src={vue.$attrs.res.data} v-prefix/>
         }
       }),
       failComp: config.NotFound(),
-      carouselSubRoute: config.carouselSubRoute,
-      getImg
+      carouselSubRoute: config.carouselSubRoute
     }
   }
 })

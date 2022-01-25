@@ -1,12 +1,10 @@
-import { get } from '../index'
+import { post } from '../index'
 
 const ret = {
   async getLoginStatus (params) {
-    return get('/api/user/login', {
-      params: {
-        account: params.username,
-        pwd: params.password
-      }
+    return post('/api/user/login', {
+      account: params.username,
+      pwd: params.password
     })
   }
 }

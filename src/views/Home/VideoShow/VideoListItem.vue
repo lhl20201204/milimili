@@ -1,19 +1,18 @@
 <template>
 <div class="video-list-item" @click="goVideoDetail">
-  <Loading :promise="promise" :successComp="successComp" :failComp="failComp" />
+  <Image :src="item.coverSrc" classes="video-list-item-src" :fail="failComp"/>
 </div>
 </template>
 
 <script>
 import { defineComponent } from 'vue'
-import Loading from '@/components/Loading'
+import Image from '@/components/Image'
 import config from '@/config'
-import { getImg } from '@/service'
 import { useRouter } from 'vue-router'
 export default defineComponent({
   props: ['item'],
   components: {
-    Loading
+    Image
   },
   setup (props) {
     const router = useRouter()
@@ -25,13 +24,6 @@ export default defineComponent({
     }
     return {
       goVideoDetail,
-      promise: getImg({ path: props.item.coverSrc }),
-      successComp: ({
-        props: ['res'],
-        render (vue) {
-          return <img v-src={vue.$props.res.data} class="video-list-item-src"/>
-        }
-      }),
       failComp: config.NotFound('div', 'defaultImgParent')
     }
   }

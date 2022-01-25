@@ -1,7 +1,7 @@
 export function directive (App) {
   App.directive('src', {
     mounted (el, binding) {
-      el.src = URL.createObjectURL(binding.value)
+      el.src = (binding.value instanceof Blob) ? URL.createObjectURL(binding.value) : binding.value
     }
   })
 

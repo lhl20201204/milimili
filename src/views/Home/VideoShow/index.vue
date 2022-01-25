@@ -3,26 +3,25 @@
      <video-list-item v-for="item in videoList" :item="item" :key="item.videoId"></video-list-item>
      <button class="refresh"
             @click="loadingVideoList">
-      <Loading :promise="promise" :successComp="successComp" :failComp="failComp"/>
+      <Image :staticPath="staticPath" classes="refresh-img"/>
        换一换
     </button>
    </div>
 </template>
 
 <script>
-import { defineComponent, onBeforeMount, reactive, ref } from 'vue'
+import { defineComponent, onBeforeMount, reactive } from 'vue'
 import VideoListItem from './VideoListItem'
 import s from '@/service/Home'
 import config from '@/config'
-import Loading from '@/components/Loading'
+import Image from '@/components/Image'
 export default defineComponent({
   components: {
     VideoListItem,
-    Loading
+    Image
   },
   setup () {
     const videoList = reactive([])
-    const refreshUrl = ref(require('@/assets' + config.homeRefresh))
     async function loadingVideoList () {
       const { data } = await s.getVideoList()
       videoList.splice(0, videoList.length)
@@ -35,14 +34,7 @@ export default defineComponent({
     return {
       videoList,
       loadingVideoList,
-      refreshUrl,
-      promise: Promise.resolve(require('@/assets' + config.homeRefresh)),
-      successComp: {
-        render (vue) {
-          return <img class="refresh-img" src={vue.$attrs.res} />
-        }
-      },
-      failComp: config.NotFound()
+      staticPath: config.homeRefresh
     }
   }
 })

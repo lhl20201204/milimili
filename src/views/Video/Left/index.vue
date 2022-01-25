@@ -4,17 +4,20 @@
   <div class="video-container">
         <Video :v="v"/>
   </div>
+  <video-footer> </video-footer>
 </div>
 </template>
 
 <script>
 import { defineComponent, inject } from 'vue'
 import Video from '@/components/Video'
-import VideoHeader from './VideoHeader.vue'
+import VideoHeader from './VideoHeader'
+import VideoFooter from './VideoFooter'
 export default defineComponent({
   components: {
     Video,
-    VideoHeader
+    VideoHeader,
+    VideoFooter
   },
   setup () {
     const v = inject('video')
