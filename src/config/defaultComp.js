@@ -1,8 +1,23 @@
+import Image from '@/components/Image'
 export default {
-  NotFound: (comp, classes) => ({
+  NotFound: (comp, classes, selfStyle) => ({
     props: ['res'],
     render () {
-      return comp ? <comp class={classes}><img src={require('@/assets/error/network.error.png')} v-prefix/> </comp> : <img src={require('@/assets/error/network.error.png')} v-prefix/>
+      return comp ? <comp class={classes}>
+        <Image
+          staticPath="/error/network.error.png"
+          directive={{
+            'v-prefix': ''
+          }}
+          style={selfStyle}
+        />
+      </comp> : <Image
+        staticPath="/error/network.error.png"
+        directive={{
+          'v-prefix': ''
+        }}
+        style={selfStyle}
+      />
     }
   })
 

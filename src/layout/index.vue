@@ -1,7 +1,7 @@
 <template >
   <a-layout class="layout">
     <a-layout-header >
-      <span class="logo" >{{title}}&nbsp;&nbsp;{{$store.state.userName}}</span>
+      <span class="logo" >{{title}}&nbsp;&nbsp;&nbsp;<Avatar :src="$store.state.userAvatarSrc"/>&nbsp;&nbsp;&nbsp;{{$store.state.userName}} </span>
       <a-menu
        theme="dark"
         mode="horizontal"
@@ -48,8 +48,11 @@ import moment from 'moment'
 import config from '@/config'
 import { getAuthority } from '@/utils'
 import { useRoute } from 'vue-router'
-
+import Avatar from '@/components/Avatar'
 export default defineComponent({
+  components: {
+    Avatar
+  },
   setup () {
     const instance = getCurrentInstance()
     const { routes } = config
@@ -59,7 +62,6 @@ export default defineComponent({
     const state = reactive({
       activateIndex: pathRouter.findIndex(v => route.path.slice(1).startsWith(v))
     })
-
     const hoverComp = (instance) => {
       navRouter.filter(v => v.type === 'hover').forEach(element => {
         const node = instance.refs[element.path][0].$el.nextElementSibling

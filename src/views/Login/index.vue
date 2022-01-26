@@ -58,15 +58,17 @@ export default defineComponent({
     const storage = sessionStorage // 可能会换sessionstorage待定
     const router = useRouter()
     const store = useStore()
-    const onLogin = (username) => {
+    const onLogin = (username, userId, avatar) => {
       store.commit('changeLoginStatus', true)
       store.commit('changeUserStatus', username)
+      store.commit('changeUserId', userId)
+      store.commit('changeUserAvatarSrc', avatar)
       router.push('/home')
       message.success(`${username} 您好！欢迎登录milimili`)
     }
 
-    if (storage.getItem('rememberPassword') && storage.getItem('currentUser')) {
-      onLogin(storage.getItem('currentUser'))
+    if (storage.getItem('rememberPassword') && storage.getItem('currentUser') && storage.getItem('currentUserId') && storage.getItem('currentUserAvatarSrc')) {
+      onLogin(storage.getItem('currentUser'), storage.getItem('currentUserId'), storage.getItem('currentUserAvatarSrc'))
     }
     const formState = reactive({
       username: '',
@@ -86,8 +88,10 @@ export default defineComponent({
       }
       storage.setItem('rememberPassword', values.remember)
       storage.setItem('currentUser', username)
+      storage.setItem('currentUserId', data.userId)
+      storage.setItem('currentUserAvatarSrc', data.avatar || config.userDefaultImagePath)
       storage.setItem('authority', data.authority || '')
-      onLogin(username)
+      onLogin(username, data.userId, storage.getItem('currentUserAvatarSrc'))
     }
 
     const onFinishFailed = errorInfo => {

@@ -1,6 +1,7 @@
 <template>
 <div class="video-list-item" @click="goVideoDetail">
   <Image :src="item.coverSrc" classes="video-list-item-src" :fail="failComp"/>
+  <span class="video_title">“{{item.videoTitle}}”</span>
 </div>
 </template>
 
@@ -39,6 +40,7 @@ export default defineComponent({
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
 }
 
 .video-list-item-src {
@@ -53,6 +55,31 @@ export default defineComponent({
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.video_title {
+  position: absolute;
+  width: 100%;
+  padding-top: 80px;
+  text-align: center;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: white;
+  font-size: 13px;
+  font-weight: bold;
+  transition: all 1.3s;
+}
+
+.video-list-item:hover > .video_title {
+  width: 90%;
+  height: 90%;
+  padding-top: 10px;
+  background: rgba(0, 0, 0, 0.3);
+  text-align: left;
+  overflow: visible;
+  white-space: normal;
+  text-overflow: unset;
 }
 
 </style>

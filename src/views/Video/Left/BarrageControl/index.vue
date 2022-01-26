@@ -1,7 +1,7 @@
 <template>
   <a-form
     v-show="show"
-    :model="formState"
+    :model="controlBarrage"
     name="basic"
     :label-col="{ span: 8 }"
     :wrapper-col="{ span: 16 }"
@@ -14,28 +14,42 @@
     >
       <a-select
       ref="select"
-      v-model:value="formState.size"
+      v-model:value="controlBarrage.size"
       :getPopupContainer="(triggerNode) => triggerNode.parentNode"
-
     >
-      <a-select-option value="12">小</a-select-option>
-      <a-select-option value="14">标准</a-select-option>
-      <a-select-option value="16">大</a-select-option>
+      <a-select-option v-for="item in barrageControlSizeSubRoute" :key="item.key" :value="item.value" >{{item.text}}</a-select-option>
     </a-select>
+
     </a-form-item>
 
     <a-form-item
       label="模式"
       name="mode"
     >
-     <a-input v-model:value="formState.mode" />
+      <a-select
+      ref="select"
+      v-model:value="controlBarrage.type"
+      :getPopupContainer="(triggerNode) => triggerNode.parentNode"
+    >
+      <a-select-option v-for="item in barrageControlModeSubRoute" :key="item.key" :value="item.value" >{{item.text}}</a-select-option>
+    </a-select>
     </a-form-item>
 
     <a-form-item
       label="颜色"
       name="color"
     >
-     <a-input v-model:value="formState.color" />
+    <a-select
+      ref="select"
+      v-model:value="controlBarrage.color"
+      :getPopupContainer="(triggerNode) => triggerNode.parentNode"
+    >
+      <a-select-option v-for="(item,index) in barrageControlColorSubRoute" :key="index" :value="item" ><div :style="{
+        background: item
+      }">
+        {{item}}
+        </div></a-select-option>
+    </a-select>
     </a-form-item>
 
   </a-form>
@@ -43,26 +57,27 @@
 
 <script>
 import { defineComponent, reactive, ref, watch } from 'vue'
+import config from '@/config'
+import { useStore } from 'vuex'
 export default defineComponent({
   setup () {
     const show = ref(false)
-    const formState = reactive({
-      size: '标准',
-      mode: null,
-      color: null
-    })
+    const store = useStore()
+    const controlBarrage = reactive(store.state.controlBarrage)
 
     watch(show, () => {
-      console.log(formState.size, formState.mode, formState.color)
+      store.commit('controlBarrageSetting', { size: controlBarrage.size, type: controlBarrage.type, color: controlBarrage.color })
     })
-
     function onFinish () {
 
     }
     return {
       show,
-      formState,
-      onFinish
+      controlBarrage,
+      onFinish,
+      barrageControlSizeSubRoute: config.barrageControlSizeSubRoute,
+      barrageControlModeSubRoute: config.barrageControlModeSubRoute,
+      barrageControlColorSubRoute: config.barrageControlColorSubRoute
     }
   }
 })
@@ -72,10 +87,10 @@ export default defineComponent({
 .ant-form {
   position:absolute;
   background: rgba(0, 0, 0, 0.8);
-  padding: 10px 20px;
-  width: 180px;
-  height: 255px;
-  top: -255px;
+  padding: 20px;
+  width: 200px;
+  height: 185px;
+  top: -185px;
   box-shadow: 1px 1px rgba(0, 0, 0, 0.2);
   .ant-form-item-label > label {
     color: white;

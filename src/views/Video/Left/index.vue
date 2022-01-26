@@ -3,6 +3,7 @@
   <video-header> </video-header>
   <div class="video-container">
         <Video :v="v"/>
+        <Barrage v-for="item in barrage" :key="item.barrageId" :item="item" />
   </div>
   <video-footer> </video-footer>
 </div>
@@ -11,18 +12,22 @@
 <script>
 import { defineComponent, inject } from 'vue'
 import Video from '@/components/Video'
+import Barrage from './Barrage'
 import VideoHeader from './VideoHeader'
 import VideoFooter from './VideoFooter'
 export default defineComponent({
   components: {
     Video,
     VideoHeader,
-    VideoFooter
+    VideoFooter,
+    Barrage
   },
   setup () {
     const v = inject('video')
+    const { v: barrage } = inject('barrage')
     return {
-      v
+      v,
+      barrage
     }
   }
 })
@@ -39,6 +44,8 @@ export default defineComponent({
    align-items: center;
    background: black;
    color: white;
+   position: relative;
+   overflow: hidden;
    > video {
      width: 100%;
      height: 100%;

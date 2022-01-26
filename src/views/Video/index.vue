@@ -11,6 +11,7 @@ import { useRouter } from 'vue-router'
 import Right from './Right'
 import Left from './Left'
 import s from '@/service/Video'
+import { useStore } from 'vuex'
 export default defineComponent({
   components: {
     Right,
@@ -18,35 +19,48 @@ export default defineComponent({
   },
   setup () {
     const router = useRouter()
-
+    const store = useStore()
     const video = JSON.parse(JSON.stringify(router.currentRoute.value.query))
-    provide('video', reactive(video))
 
     const play = reactive({
       v: null
     })
+
     const barrage = reactive({
-      v: null
+      v: []
     })
-    provide('play', play)
-    provide('barrage', barrage)
 
     const isShowBarrage = ref(true)
+
+    const currentTime = ref(0)
+
+    function changeCurrentTime (x) {
+      console.log(x)
+      currentTime.value = x
+    }
+
     function toggleShowBarrage (x) {
       isShowBarrage.value = x
     }
-    provide('toggleShowBarrage', toggleShowBarrage)
-
     const barrageContent = ref('')
+
     function changeBarrageContent (x) {
       barrageContent.value = x.target.value
     }
-    provide('changeBarrageContent', changeBarrageContent)
 
     function sendBarrage () {
-      console.log(isShowBarrage.value, barrageContent.value)
+      console.log(isShowBarrage.value, barrageContent.value, store.state.controlBarrage, store.state.userId)
     }
+
+    provide('isShowBarrage', isShowBarrage)
+    provide('video', reactive(video))
+    provide('play', play)
+    provide('barrage', barrage)
+    provide('toggleShowBarrage', toggleShowBarrage)
+    provide('changeBarrageContent', changeBarrageContent)
     provide('sendBarrage', sendBarrage)
+    provide('currentTime', currentTime)
+    provide('changeCurrentTime', changeCurrentTime)
 
     ;(async () => {
       const { data } = await s.getVideoDetailById({
@@ -57,7 +71,9 @@ export default defineComponent({
       const { data: data2 } = await s.getBarrageById({
         videoId: video.videoId
       })
-      barrage.v = reactive(data2)
+      for (const b of data2) {
+        barrage.v.push(reactive(b))
+      }
     })()
   }
 })

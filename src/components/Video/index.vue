@@ -6,8 +6,8 @@
 import { defineComponent } from 'vue'
 import Loading from '@/components/Loading'
 import { getPlayVideo } from '@/service'
-import { getImgSrc } from '@/utils'
 import config from '@/config'
+import { getVideoComponent } from './Video'
 export default defineComponent({
   props: ['v'],
   components: {
@@ -18,18 +18,7 @@ export default defineComponent({
       promise: getPlayVideo({
         path: props.v.videoId
       }),
-      successComp: {
-        render (vue) {
-          return <video controls
-            preload="preload"
-            poster={getImgSrc(props.v.coverSrc)}
-          >
-            <source v-src={vue.$attrs.res.data}
-              type="video/mp4" />
-                     你的浏览器不支持 HTML 5 video标签。
-          </video>
-        }
-      },
+      successComp: getVideoComponent(props),
       failComp: config.NotFound()
     }
   }

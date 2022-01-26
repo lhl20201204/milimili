@@ -11,17 +11,17 @@ export default defineComponent({
   components: {
     Loading
   },
-  props: ['src', 'classes', 'p', 'success', 'fail', 'directive', 'staticPath'],
+  props: ['src', 'classes', 'p', 'success', 'fail', 'directive', 'staticPath', 'style'],
   setup (props) {
     return {
       promise: props.staticPath ? Promise.resolve({ data: require('@/assets' + props.staticPath) }) : (props.p || getImg({ path: props.src })),
       successComp: props.success || ({
         props: ['res'],
         render (vue) {
-          return <img v-src={vue.$props.res.data} class={props.classes || ''} {...(props.directive || {})}/>
+          return <img v-src={vue.$props.res.data} class={props.classes || ''} style={(props.style || {})} {...(props.directive || {})} />
         }
       }),
-      failComp: props.fail || config.NotFound()
+      failComp: props.fail || config.NotFound(null, null, props.style)
     }
   }
 })
