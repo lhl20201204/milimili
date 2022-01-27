@@ -6,6 +6,7 @@
         <Barrage v-for="item in barrage" :key="item.barrageId" :item="item" />
   </div>
   <video-footer> </video-footer>
+  <comment-section></comment-section>
 </div>
 </template>
 
@@ -15,12 +16,14 @@ import Video from '@/components/Video'
 import Barrage from './Barrage'
 import VideoHeader from './VideoHeader'
 import VideoFooter from './VideoFooter'
+import CommentSection from './CommentSection'
 export default defineComponent({
   components: {
     Video,
     VideoHeader,
     VideoFooter,
-    Barrage
+    Barrage,
+    CommentSection
   },
   setup () {
     const v = inject('video')

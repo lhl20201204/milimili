@@ -14,7 +14,7 @@
       allowClear
       @change="changeBarrageContent"
     />
-    <a-button type="primary" @click="sendBarrage">发送</a-button>
+    <a-button type="primary" @click="sendBarrage" :disabled="barrageContent===''">发送</a-button>
   </div>
 </template>
 

@@ -12,6 +12,7 @@ import Right from './Right'
 import Left from './Left'
 import s from '@/service/Video'
 import { useStore } from 'vuex'
+import { multipleRequestMerge } from '@/service'
 export default defineComponent({
   components: {
     Right,
@@ -30,10 +31,14 @@ export default defineComponent({
       v: []
     })
 
+    const comment = reactive({
+      v: []
+    })
+
     const isShowBarrage = ref(true)
 
     const currentTime = ref(0)
-
+    const barrageContent = ref('')
     function changeCurrentTime (x) {
       console.log(x)
       currentTime.value = x
@@ -42,7 +47,6 @@ export default defineComponent({
     function toggleShowBarrage (x) {
       isShowBarrage.value = x
     }
-    const barrageContent = ref('')
 
     function changeBarrageContent (x) {
       barrageContent.value = x.target.value
@@ -56,24 +60,65 @@ export default defineComponent({
     provide('video', reactive(video))
     provide('play', play)
     provide('barrage', barrage)
+    provide('comment', comment)
     provide('toggleShowBarrage', toggleShowBarrage)
     provide('changeBarrageContent', changeBarrageContent)
     provide('sendBarrage', sendBarrage)
     provide('currentTime', currentTime)
     provide('changeCurrentTime', changeCurrentTime)
 
-    ;(async () => {
-      const { data } = await s.getVideoDetailById({
-        videoId: video.videoId
-      })
-      play.v = reactive(data)
-
-      const { data: data2 } = await s.getBarrageById({
-        videoId: video.videoId
-      })
-      for (const b of data2) {
-        barrage.v.push(reactive(b))
+    async function loadById (res, method, params, arr) {
+      const data = await multipleRequestMerge(method, params, arr)
+      if (Array.isArray(res.v)) {
+        for (const b of data) {
+          res.v.push(reactive(b))
+        }
+      } else {
+        if (!data) {
+          return console.error('返回的结果为空')
+        }
+        res.v = reactive(data)
       }
+    }
+
+    ;(async () => {
+      const params = {
+        videoId: video.videoId
+      }
+      loadById(play, s.getPlayById, params)
+      loadById(barrage, s.getBarrageById, params)
+      loadById(
+        comment,
+        s.getCommentById,
+        params,
+        [
+          [
+            [
+              [
+                {
+                  method: s.getUserById,
+                  attrs: ['userId']
+                },
+                {
+                  method: s.getPlayById,
+                  attrs: ['videoId'],
+                  cb: data => ({ play: data })
+                }
+              ],
+              {
+                method: s.getBarrageById,
+                attrs: ['videoId'],
+                cb: data => ({ barrage: data })
+              }
+            ],
+            {
+              method: s.getLoveById,
+              attrs: ['commentId'],
+              cb: data => ({ love: data })
+            }
+          ]
+        ]
+      )
     })()
   }
 })

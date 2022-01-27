@@ -5,7 +5,7 @@
 <script>
 import { defineComponent, ref } from 'vue'
 import { message } from 'ant-design-vue'
-import { LoadingOutlined, WarningOutlined } from '@ant-design/icons-vue'
+import { WarningOutlined } from '@ant-design/icons-vue'
 export default defineComponent({
   props: {
     promise: {
@@ -23,7 +23,7 @@ export default defineComponent({
     loadingComp: {
       type: [Object, Function],
       default () {
-        return LoadingOutlined
+        return <a-spin tip="Loading..." />
       }
     },
     failComp: {

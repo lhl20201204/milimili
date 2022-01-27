@@ -24,5 +24,9 @@ export default {
   barrageControlColorSubRoute: [
     '#FFFFFF', '#FE0302', '#FF7204', '#FFAA02', '#FFD302', '#FFFF00', '#A0EE00',
     '#019899', '#4266BE', '#89D5FF', '#CC0273', '#222222', '#9B9B9B', '#00CD00'
+  ],
+  commentSortSubRoute: [
+    '按时间排序',
+    '按热度排序'
   ]
 }
