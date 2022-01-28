@@ -92,31 +92,15 @@ export default defineComponent({
         s.getCommentById,
         params,
         [
-          [
-            [
-              [
-                {
-                  method: s.getUserById,
-                  attrs: ['userId']
-                },
-                {
-                  method: s.getPlayById,
-                  attrs: ['videoId'],
-                  cb: data => ({ play: data })
-                }
-              ],
-              {
-                method: s.getBarrageById,
-                attrs: ['videoId'],
-                cb: data => ({ barrage: data })
-              }
-            ],
-            {
-              method: s.getLoveById,
-              attrs: ['commentId'],
-              cb: data => ({ love: data })
-            }
-          ]
+          {
+            method: s.getUserById,
+            attrs: ['userId']
+          },
+          {
+            method: s.getLoveById,
+            attrs: ['commentId'],
+            cb: data => ({ love: data })
+          }
         ]
       )
     })()

@@ -13,5 +13,6 @@ export default {
   navHeaderFontSize: '24px',
   layoutFooterHeight: '70px',
   layoutContentPadding: '24px',
+  rootCommentId: '00000000000000000000',
   routes
 }

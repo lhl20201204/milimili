@@ -1,5 +1,5 @@
 <template>
-  <comment-item v-for="item in comment" :key="item.commentId" :item="item" :parentCommentId="parentCommentId"></comment-item>
+    <comment-item v-for="item in comment" :key="item.commentId" :item="item" :parentCommentId="parentCommentId"></comment-item>
 </template>
 
 <script>
@@ -12,7 +12,6 @@ export default defineComponent({
   props: ['parentCommentId'],
   setup (props) {
     const { v: comment } = inject('comment')
-    console.log(comment)
     return {
       comment
     }

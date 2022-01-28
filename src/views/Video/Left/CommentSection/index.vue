@@ -1,8 +1,8 @@
 <template>
  <div class="commentPage">
    <comment-nav></comment-nav>
-   <send-comment :src="$store.state.userAvatarSrc"> </send-comment>
-   <Comment parentCommentId="00000000000000000000"/>
+   <send-comment > </send-comment>
+   <Comment :parentCommentId="rootCommentId"/>
  </div>
 </template>
 
@@ -11,6 +11,7 @@ import { defineComponent } from 'vue'
 import CommentNav from './CommentNav'
 import Comment from './Comment'
 import SendComment from './SendComment'
+import config from '@/config'
 export default defineComponent({
   components: {
     CommentNav,
@@ -19,6 +20,7 @@ export default defineComponent({
   },
   setup () {
     return {
+      rootCommentId: config.rootCommentId
     }
   }
 })
