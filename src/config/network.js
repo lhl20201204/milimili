@@ -1,4 +1,5 @@
+const base = 'http://192.168.43.23:'
 module.exports = {
-  baseUrl: 'http://192.168.105.187:9998/',
-  videoIdPrefixZero: 20
+  baseUrl: base + '9998/',
+  socketUrl: base + '4000'
 }

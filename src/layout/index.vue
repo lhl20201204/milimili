@@ -1,43 +1,51 @@
 <template >
   <a-layout class="layout">
-    <a-layout-header >
-      <span class="logo" >{{title}}&nbsp;&nbsp;&nbsp;<Avatar :src="$store.state.userAvatarSrc"/>&nbsp;&nbsp;&nbsp;{{$store.state.userName}} </span>
-      <a-menu
-       theme="dark"
-        mode="horizontal"
-        disabled
-      ><a-menu-item class="other-menu-item" :class="{
+    <a-layout-header>
+      <span class="logo">{{title}}&nbsp;&nbsp;&nbsp;
+        <Avatar v-if="$store.state.userAvatarSrc"
+                :src="$store.state.userAvatarSrc" />&nbsp;&nbsp;&nbsp;{{$store.state.userName}}
+      </span>
+      <a-menu theme="dark"
+              mode="horizontal"
+              disabled>
+        <a-menu-item class="other-menu-item"
+                     :class="{
           'other-menu-item-selected': state.activateIndex === -1,
           'unique-menu-item-selected':  state.activateIndex === -1
-        }">其他页面</a-menu-item> </a-menu>
-        <!-- 处理导航栏折叠问题 -->
-      <a-menu
-        v-show="time >= 1 || (time === 0 && $route.path !== '/login')"
-        v-model:selectedKeys="selectedKeys"
-        theme="dark"
-        mode="horizontal"
-        :style="{ lineHeight:navHeaderHeight}"
-      >
-        <a-menu-item class="my-a-menu-item"  v-for="(item,index) in navRouter" :key="item.path"
-         :class="{
+        }">其他页面</a-menu-item>
+      </a-menu>
+      <!-- 处理导航栏折叠问题 -->
+      <a-menu v-show="time >= 1 || (time === 0 && $route.path !== '/login')"
+              v-model:selectedKeys="selectedKeys"
+              theme="dark"
+              mode="horizontal"
+              :style="{ lineHeight:navHeaderHeight}">
+        <a-menu-item class="my-a-menu-item"
+                     v-for="(item,index) in navRouter"
+                     :key="item.path"
+                     :class="{
            'white-font': item.unSelectable,
            'other-menu-item': item.unSelectable,
           'ant-menu-item-selected': index === state.activateIndex && !item.unSelectable,
           'other-menu-item-selected': index === state.activateIndex && item.unSelectable,
           'unique-menu-item-selected': index === state.activateIndex
           }"
-        @click="goRoute(item)"
-        :disabled="item.unSelectable"
-         :ref="item.path"><component :is="item.icon"></component>&nbsp;&nbsp;{{item.title}}</a-menu-item>
+                     @click="goRoute(item)"
+                     :disabled="item.unSelectable"
+                     :ref="item.path">
+          <component :is="item.icon"></component>&nbsp;&nbsp;{{item.title}}
+        </a-menu-item>
 
-        </a-menu>
+      </a-menu>
     </a-layout-header>
     <a-layout-content style="padding: 0 50px">
-      <div :style="{ background: '#fff', padding: layoutContentPadding, minHeight: `calc(100vh - ${(navHeaderHeight.slice(0,-2))*1+(layoutFooterHeight.slice(0,-2))*1}px)` }" ><router-view/></div>
+      <div :style="{ background: '#fff', padding: layoutContentPadding, minHeight: `calc(100vh - ${(navHeaderHeight.slice(0,-2))*1+(layoutFooterHeight.slice(0,-2))*1}px)` }">
+        <router-view />
+      </div>
     </a-layout-content>
     <a-layout-footer :style="{'text-align': 'center',
                                 'height': layoutFooterHeight }">
-     MILIMILI ©{{year}} Created by Linhl
+      MILIMILI ©{{year}} Created by Linhl
     </a-layout-footer>
   </a-layout>
 </template>
@@ -120,7 +128,6 @@ export default defineComponent({
 })
 </script>
 <style lang="less" scoped>
-
 .site-layout-content {
   min-height: 280px;
   padding: 24px;
@@ -128,7 +135,7 @@ export default defineComponent({
 }
 
 .ant-layout .ant-layout-header {
-  .logo{
+  .logo {
     font-size: 24px;
     color: white;
   }
@@ -149,61 +156,72 @@ export default defineComponent({
   margin: 16px 0 16px 24px;
 }
 
-[data-theme='dark'] .site-layout-content {
+[data-theme="dark"] .site-layout-content {
   background: #141414;
 }
 
 element.style {
-    opacity: 1;
-    order: 1;
+  opacity: 1;
+  order: 1;
 }
-.ant-menu.ant-menu-dark :deep(.white-font){
+.ant-menu.ant-menu-dark :deep(.white-font) {
   color: rgba(255, 255, 255, 0.65) !important;
 }
-.ant-menu.ant-menu-dark :deep(.ant-menu-item){
+.ant-menu.ant-menu-dark :deep(.ant-menu-item) {
   background-color: #001529;
 }
- .ant-menu.ant-menu-dark :deep(.ant-menu-item-selected.unique-menu-item-selected),
- .ant-menu.ant-menu-dark :deep(.ant-menu-item-selected.unique-menu-item-selected){
-   .anticon{
-      color: black;
-    }
-    background-color: white;
-    color: black !important;
-    // border-top-left-radius: 30px;
-    // border-top-right-radius: 30px;
+.ant-menu.ant-menu-dark
+  :deep(.ant-menu-item-selected:not(.unique-menu-item-selected)) {
+  color: rgba(255, 255, 255, 0.65);
+  > .ant-menu-title-content > span {
+    color: rgba(255, 255, 255, 0.65);
   }
+}
+.ant-menu.ant-menu-dark
+  :deep(.ant-menu-item-selected.unique-menu-item-selected),
+.ant-menu.ant-menu-dark
+  :deep(.ant-menu-item-selected.unique-menu-item-selected) {
+  .anticon {
+    color: black;
+  }
+  background-color: white;
+  color: black !important;
+  // border-top-left-radius: 30px;
+  // border-top-right-radius: 30px;
+}
 
-  .ant-menu-dark.ant-menu-horizontal :deep(.ant-menu-item):not(.ant-menu-item-selected):not(.ant-menu-item-disabled):hover {
-    .anticon{
-      color: rgb(0, 21, 41);
-    }
-    background-color:whitesmoke;
+.ant-menu-dark.ant-menu-horizontal
+  :deep(.ant-menu-item):not(.ant-menu-item-selected):not(.ant-menu-item-disabled):hover {
+  .anticon {
     color: rgb(0, 21, 41);
-    // border-top-left-radius: 30px;
-    // border-top-right-radius: 30px;
   }
+  background-color: whitesmoke;
+  color: rgb(0, 21, 41);
+  // border-top-left-radius: 30px;
+  // border-top-right-radius: 30px;
+}
 
-  .ant-menu-dark.ant-menu-horizontal :deep(.ant-menu-item.other-menu-item.ant-menu-item-disabled):not(.other-menu-item-selected):hover {
-    background-color: rgb(0, 21, 41);
-  }
-  .ant-menu-dark.ant-menu-horizontal :deep(.other-menu-item-selected):hover,
-  .ant-menu-dark.ant-menu-horizontal :deep(.other-menu-item-selected) {
-    .anticon{
-      color: rgb(0, 21, 41);
-    }
-    background-color: white;
-    color: rgb(0, 21, 41) !important;
-  }
-
-  .ant-menu-dark.ant-menu-horizontal :deep(.ant-menu-item.ant-menu-item-selected):not(.ant-menu-item-disabled):hover {
-    .anticon{
-      color: rgb(0, 21, 41);
-    }
-    background-color: white;
+.ant-menu-dark.ant-menu-horizontal
+  :deep(.ant-menu-item.other-menu-item.ant-menu-item-disabled):not(.other-menu-item-selected):hover {
+  background-color: rgb(0, 21, 41);
+}
+.ant-menu-dark.ant-menu-horizontal :deep(.other-menu-item-selected):hover,
+.ant-menu-dark.ant-menu-horizontal :deep(.other-menu-item-selected) {
+  .anticon {
     color: rgb(0, 21, 41);
-    // border-top-left-radius: 30px;
-    // border-top-right-radius: 30px;
   }
+  background-color: white;
+  color: rgb(0, 21, 41) !important;
+}
 
+.ant-menu-dark.ant-menu-horizontal
+  :deep(.ant-menu-item.ant-menu-item-selected):not(.ant-menu-item-disabled):hover {
+  .anticon {
+    color: rgb(0, 21, 41);
+  }
+  background-color: white;
+  color: rgb(0, 21, 41);
+  // border-top-left-radius: 30px;
+  // border-top-right-radius: 30px;
+}
 </style>

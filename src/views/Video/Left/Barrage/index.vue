@@ -40,7 +40,7 @@ export default defineComponent({
     }
 
     watch(() => currentTime.value, (val) => {
-      if (!once && val > parseInt(props.item.sendTime) && val < parseInt(props.item.sendTime) + 2) {
+      if (!once && ((props.item.sendTime > 0 && val >= parseInt(props.item.sendTime)) || (props.item.sendTime === 0 && val > parseInt(props.item.sendTime))) && val < parseInt(props.item.sendTime) + 2) {
         once = true
         isVisible.value = true
         run()

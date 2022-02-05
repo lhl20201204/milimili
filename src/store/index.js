@@ -5,7 +5,7 @@ export default createStore({
     login: false,
     userName: 'visitor',
     userId: 0,
-    userAvatarSrc: 'user_default_avatar',
+    userAvatarSrc: '',
     controlBarrage: {
       size: 14,
       type: 1,

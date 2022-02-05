@@ -1,9 +1,10 @@
 import config from '@/config'
 import { markRaw } from 'vue'
+import { firstToUpperCase } from '@/utils'
 
 const getSplitRoutes = (arr, parentPath = '', parentFile = '', isNested = true) => {
   return arr.reduce((prev, { path, children, nested = true }) => {
-    const name = path[0].toUpperCase() + path.slice(1)
+    const name = firstToUpperCase(path)
     const routePath = parentPath + '/' + path
     const selfPath = (parentFile ? '' : '/') + path
     const routeFile = parentFile + '/' + name
@@ -30,7 +31,7 @@ const getSplitRoutes = (arr, parentPath = '', parentFile = '', isNested = true) 
               })
             })
           })
-        })(markRaw({ }))
+        })(markRaw({}))
       },
       children: nested ? childrenRoute : []
     }, ...(nested ? [] : childrenRoute)]

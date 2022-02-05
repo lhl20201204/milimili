@@ -1,11 +1,11 @@
 <template>
   <Image :src="src"
-  :style="{
+         :style="{
   width: `${width}px`,
   height: `${height}px`,
   'border-radius': radius?`${radius}px`: '50%',
   overflow: 'hidden'
-}"/>
+}" />
 </template>
 
 <script>
@@ -28,5 +28,4 @@ export default defineComponent({
 </script>
 
 <style lang="less">
-
 </style>

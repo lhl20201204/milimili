@@ -5,7 +5,7 @@ export function useMiddleWare (proxyObject, middleWares, unProxyAttr, ctx) {
   if (!Array.isArray(middleWares)) {
     middleWares = [middleWares]
   }
-  const attrs = Object.getOwnPropertyNames(proxyObject).filter(attr => !unProxyAttr.includes(attr) && (typeof proxyObject[attr] === 'function'))
+  const attrs = Object.getOwnPropertyNames(proxyObject).filter(attr => !attr.startsWith('_') && !unProxyAttr.includes(attr) && (typeof proxyObject[attr] === 'function'))
   middleWares = middleWares.map(v => v(ctx)).reverse()
   for (const attr of attrs) {
     const originMethod = proxyObject[attr]

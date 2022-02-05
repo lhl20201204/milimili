@@ -19,6 +19,9 @@ export function directive (App) {
     const maxheight = el.parentNode.clientHeight
     const image = new Image()
     image.onload = () => {
+      if (!maxwidth && !maxheight) {
+        return
+      }
       const w = el.width
       const h = el.height
       const ratio = w / h

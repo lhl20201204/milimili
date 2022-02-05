@@ -1,13 +1,18 @@
 <template>
-<div class="video-left-page">
-  <video-header> </video-header>
-  <div class="video-container">
-        <Video :v="v"/>
-        <Barrage v-for="item in barrage" :key="item.barrageId" :item="item" />
+  <div class="video-left-page">
+    <video-header> </video-header>
+    <div class="video-container">
+      <Video :v="video[0]" />
+      <Barrage v-for="item in barrage"
+               :key="item.barrageId"
+               :item="item" />
+    </div>
+    <video-footer> </video-footer>
+    <VideoControl />
+    <VideoDescription />
+    <BarrageList />
+    <onlineUsersList />
   </div>
-  <video-footer> </video-footer>
-  <comment-section></comment-section>
-</div>
 </template>
 
 <script>
@@ -16,20 +21,26 @@ import Video from '@/components/Video'
 import Barrage from './Barrage'
 import VideoHeader from './VideoHeader'
 import VideoFooter from './VideoFooter'
-import CommentSection from './CommentSection'
+import VideoControl from './VideoControl'
+import VideoDescription from './VideoDescription'
+import BarrageList from './BarrageList'
+import onlineUsersList from './onlineUsersList'
 export default defineComponent({
   components: {
     Video,
     VideoHeader,
     VideoFooter,
     Barrage,
-    CommentSection
+    VideoDescription,
+    VideoControl,
+    BarrageList,
+    onlineUsersList
   },
   setup () {
-    const v = inject('video')
+    const { v: video } = inject('video')
     const { v: barrage } = inject('barrage')
     return {
-      v,
+      video,
       barrage
     }
   }
@@ -38,21 +49,21 @@ export default defineComponent({
 
 <style lang="less" scoped>
 .video-left-page {
-  flex:1;
+  flex: 1;
   > .video-container {
-   width: 637px;
-   height: 435px;
-   display: flex;
-   justify-content: center;
-   align-items: center;
-   background: black;
-   color: white;
-   position: relative;
-   overflow: hidden;
-   > video {
-     width: 100%;
-     height: 100%;
-   }
+    width: 637px;
+    height: 445px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: black;
+    color: white;
+    position: relative;
+    overflow: hidden;
+    > video {
+      width: 100%;
+      height: 100%;
+    }
   }
 }
 </style>

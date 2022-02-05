@@ -1,21 +1,27 @@
 <template>
-  <div class="video-right-page">我是视频详情右边</div>
+  <div class="video-right-page">
+    <UPDetail />
+    <comment-section></comment-section>
+  </div>
 </template>
 
 <script>
-import { defineComponent, inject } from 'vue'
-
+import { defineComponent } from 'vue'
+import CommentSection from './CommentSection'
+import UPDetail from './UpDetail'
 export default defineComponent({
+  components: {
+    CommentSection,
+    UPDetail
+  },
   setup () {
-    const video = inject('video')
-    !video && console.log(video)
   }
 })
 </script>
 
 <style lang="less" scoped>
 .video-right-page {
-  flex:1;
-  background: red;
+  padding-left: 10px;
+  flex: 1;
 }
 </style>

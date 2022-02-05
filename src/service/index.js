@@ -1,5 +1,6 @@
 import axios from 'axios'
 import qs from 'qs'
+
 export function get (url, params, config) {
   return axios.get(url, params, config).catch(e => e)
 }
@@ -86,7 +87,7 @@ export async function multipleRequestMerge (method, params, arr) {
   }
 
   const reduceFn = (p, next) => {
-    return p.then(getHandle(next.method, next.attrs, next, next.cb))
+    return p.then(getHandle(next))
   }
 
   const flattern = (arr, index = 0) => {
@@ -99,10 +100,12 @@ export async function multipleRequestMerge (method, params, arr) {
     return ret
   }
 
-  const getHandle = (method, attrs, item, cb) =>
-    async res => {
+  const getHandle = (item) => {
+    const { method, attrs, cb, lastResult } = item
+    return async res => {
+      lastResult && lastResult(res)
       const isArray = Array.isArray(item)
-      cb = cb || (x => x) // cb 函数返回一个挂载在（上次请求结果对象）提供的对象，假设 上次请求结果为 {a: 1} , 本次请求结果为 {b:2}
+      const callBack = cb || (x => x) // cb 函数返回一个挂载在（上次请求结果对象）提供的对象，假设 上次请求结果为 {a: 1} , 本次请求结果为 {b:2}
       //  默认本次结果全部解构拼在（上次请求结果对象），则最终为 {a:1, b:2}
       // 如果像把本次结果存储在（上次请求结果对象） 上的xxx属性， cb设为（data）=> ({xxx: data})，则最终为 {a:1 ,xxx: {b:2} }
       return await Promise.all((Array.isArray(res) ? res : [res]).map(async c => {
@@ -110,10 +113,11 @@ export async function multipleRequestMerge (method, params, arr) {
         const data = isArray ? flattern(resource) : resource.data
         return {
           ...c,
-          ...cb(data)
+          ...callBack(data)
         }
       }))
     }
+  }
 
   return arr.reduce(
     reduceFn

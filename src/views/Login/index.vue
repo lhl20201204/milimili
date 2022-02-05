@@ -1,46 +1,46 @@
 <template>
-<div class="loginPage" :style="{
+  <div class="loginPage"
+       :style="{
   minHeight: '276px',
   height: `calc(100vh - ${formStyle.height})`
   }">
- <a-card style="width: 500px">
-   <a-form
-    :model="formState"
-    name="basic"
-    :label-col="{ span: 8 }"
-    :wrapper-col="{ span: 16 }"
-    autocomplete="off"
-    @finish="onFinish"
-    @finishFailed="onFinishFailed"
-  >
-    <a-form-item
-      label="Username"
-      name="username"
-      :rules="[{ required: true, message: 'Please input your username!' }]"
-    >
-      <a-input v-model:value="formState.username" />
-    </a-form-item>
+    <a-card style="width: 500px">
+      <a-form :model="formState"
+              name="basic"
+              :label-col="{ span: 8 }"
+              :wrapper-col="{ span: 16 }"
+              autocomplete="off"
+              @finish="onFinish"
+              @finishFailed="onFinishFailed">
+        <a-form-item label="Username"
+                     name="username"
+                     :rules="[{ required: true, message: 'Please input your username!' }]">
+          <a-input v-model:value="formState.username" />
+        </a-form-item>
 
-    <a-form-item
-      label="Password"
-      name="password"
-      :rules="[{ required: true, message: 'Please input your password!' }]"
-    >
-      <a-input-password v-model:value="formState.password" />
-    </a-form-item>
+        <a-form-item label="Password"
+                     name="password"
+                     :rules="[{ required: true, message: 'Please input your password!' }]">
+          <a-input-password v-model:value="formState.password" />
+        </a-form-item>
 
-    <a-form-item name="remember" :wrapper-col="{ offset: 8, span: 16 }">
-      <a-checkbox v-model:checked="formState.remember">Remember me</a-checkbox>
-      <span class="register" @click="goRegister">没有账号现在去注册 <ArrowRightOutlined/> </span>
-    </a-form-item>
+        <a-form-item name="remember"
+                     :wrapper-col="{ offset: 8, span: 16 }">
+          <a-checkbox v-model:checked="formState.remember">Remember me</a-checkbox>
+          <span class="register"
+                @click="goRegister">没有账号现在去注册
+            <ArrowRightOutlined />
+          </span>
+        </a-form-item>
 
-    <a-form-item :wrapper-col="{ offset: 8, span: 16 }">
-      <a-button type="primary" html-type="submit"
-      :disabled="formState.username === '' || formState.password === ''">Submit</a-button>
-    </a-form-item>
-  </a-form>
-  </a-card>
-</div>
+        <a-form-item :wrapper-col="{ offset: 8, span: 16 }">
+          <a-button type="primary"
+                    html-type="submit"
+                    :disabled="formState.username === '' || formState.password === ''">Submit</a-button>
+        </a-form-item>
+      </a-form>
+    </a-card>
+  </div>
 </template>
 <script>
 import { defineComponent, reactive } from 'vue'
@@ -67,7 +67,7 @@ export default defineComponent({
       message.success(`${username} 您好！欢迎登录milimili`)
     }
 
-    if (storage.getItem('rememberPassword') && storage.getItem('currentUser') && storage.getItem('currentUserId') && storage.getItem('currentUserAvatarSrc')) {
+    if (config.hasAccessNotLogin()) {
       onLogin(storage.getItem('currentUser'), storage.getItem('currentUserId'), storage.getItem('currentUserAvatarSrc'))
     }
     const formState = reactive({
@@ -115,18 +115,17 @@ export default defineComponent({
 </script>
 
 <style lang="less" scoped>
-.loginPage{
-   display: flex;
-   justify-content: center;
-   align-items: center;
-   .register{
-     float: right;
-     font-size:8px ;
-     color:#40a9ff;
-     &:hover {
-       color: #1890ff;
-     }
-   }
+.loginPage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .register {
+    float: right;
+    font-size: 8px;
+    color: #40a9ff;
+    &:hover {
+      color: #1890ff;
+    }
+  }
 }
-
 </style>

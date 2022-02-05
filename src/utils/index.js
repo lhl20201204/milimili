@@ -16,6 +16,10 @@ export function getAuthority (compAccess, userAccess) {
   return false
 }
 
+export function firstToUpperCase (v) {
+  return v[0].toUpperCase() + v.slice(1)
+}
+
 export function getImgSrc (path) {
   return config.baseUrl + 'getImg?path=' + path
 }
@@ -29,4 +33,8 @@ export function fillId (id) {
     id = '0' + id
   }
   return id
+}
+
+export function getCount (arr, attr, id) {
+  return arr.reduce((p, v) => p + Number(v[attr] === id), 0)
 }

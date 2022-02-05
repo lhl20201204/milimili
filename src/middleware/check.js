@@ -1,6 +1,6 @@
 import { message } from 'ant-design-vue'
 import _ from 'lodash'
-import monent from 'moment'
+import config from '@/config'
 function handle (arr, res) {
   return _.reduce(arr, (p, v) => v(p), res)
 }
@@ -9,7 +9,7 @@ const transFormDate = (res) => {
   if (res && (res instanceof Object || Array.isArray(res))) {
     for (var attr in res) {
       if (typeof res[attr] === 'string' && res[attr].match(/^(\d{4,4})-(\d{2,2})-(\d{2,2})T(\d{2,2}):(\d{2,2}):(\d{2,2})\.(\d{3,3})Z$/)) {
-        res[attr] = (monent(new Date(res[attr])).format('YYYY-MM-DD HH:mm:ss'))
+        res[attr] = config.time(new Date(res[attr]))
       }
       transFormDate(res[attr])
     }

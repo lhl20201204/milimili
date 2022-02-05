@@ -1,7 +1,7 @@
 <template>
   <div class="video-header-title">
     <h1>{{videoTitle}}</h1>
-    <span>{{play.v?play.v.length:0}}播放量&nbsp; * &nbsp; 总弹幕数{{barrage.v? barrage.v.length: 0}} &nbsp; {{time}}</span>
+    <span>{{play.v.length}}播放量&nbsp; * &nbsp; 总弹幕数{{barrage.v.length}} &nbsp; {{time}}</span>
   </div>
 </template>
 
@@ -9,14 +9,14 @@
 import { defineComponent, inject, ref } from 'vue'
 export default defineComponent({
   setup () {
-    const video = inject('video')
+    const { v: video } = inject('video')
     const barrage = inject('barrage')
     const play = inject('play')
-    const time = ref(video.time)
+    const time = ref(video[0].time || '默认时间')
     return {
       play,
       barrage,
-      videoTitle: video.videoTitle,
+      videoTitle: video[0].videoTitle || '默认标题',
       time
     }
   }

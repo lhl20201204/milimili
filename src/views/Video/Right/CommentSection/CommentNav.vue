@@ -1,6 +1,7 @@
 <template>
-   <h1>{{comment.length}}&nbsp;评论</h1>
-  <select-nav :route="commentSortSubRoute" ></select-nav>
+  <a-button @click="refresh(true)">刷新</a-button>
+  <h1>{{comment.length}}&nbsp;评论</h1>
+  <select-nav :route="commentSortSubRoute"></select-nav>
 </template>
 
 <script>
@@ -13,9 +14,11 @@ export default defineComponent({
   },
   setup () {
     const { v: comment } = inject('comment')
+    const refresh = inject('refresh')
     return {
       commentSortSubRoute: config.commentSortSubRoute,
-      comment
+      comment,
+      refresh
     }
   }
 })

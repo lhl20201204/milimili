@@ -12,6 +12,14 @@ module.exports = {
         pathRewrite: {
           '^/api': '' // /api/ / 凡是/api开头的地址都可以跨域
         }
+      },
+      '/socket.io': {
+        target: config.socketUrl,
+        changeOrigin: true,
+        ws: true,
+        pathRewrite: {
+          '^/socket.io': '/socket.io'
+        }
       }
     }
   }
