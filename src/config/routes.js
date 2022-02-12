@@ -1,6 +1,7 @@
 import HoverGame from '@/views/Game/hoverGameViews'
 import { markRaw } from 'vue'
 import { HomeOutlined, UserOutlined, UploadOutlined, CrownOutlined, GoogleOutlined } from '@ant-design/icons-vue'
+import subRoute from './subRoute'
 // redirect：如果children里的所有孩子的redirect 不为 true 时 ，默认重定向到第一个孩子
 // isNav： 默认为false，是否是顶部导航栏
 // icon：顶部导航栏图标
@@ -54,5 +55,12 @@ export const routes = [
       { path: 'test2' }
     ]
   },
-  { title: '管理员', isNav: true, path: 'admin', icon: CrownOutlined, access: 'admin' }
+  {
+    title: '管理员',
+    isNav: true,
+    path: 'admin',
+    icon: CrownOutlined,
+    access: 'admin',
+    children: subRoute.adminNavSubRoute
+  }
 ]

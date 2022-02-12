@@ -14,7 +14,7 @@
 
 <script>
 import Triangle from '@/components/shape/Triangle'
-import GameItem from './GameItem.vue'
+import GameItem from './GameItem'
 import { ref } from 'vue'
 import config from '@/config'
 export default {
@@ -39,7 +39,7 @@ export default {
   padding: 0px;
   width: 416px;
   height: 239px;
-  background:yellow;
+  background: yellow;
   top: 50px;
   left: -60px;
   box-shadow: 1px 1px rgba(0, 0, 0, 0.5);

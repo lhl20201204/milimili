@@ -1,11 +1,12 @@
 <template>
-  <Loading :promise="promise"
+  <Loading :key="src"
+           :promise="pWarap.promise"
            :successComp="successComp"
            :failComp="failComp" />
 </template>
 
 <script>
-import { defineComponent } from 'vue'
+import { defineComponent, reactive, watch } from 'vue'
 import Loading from '@/components/Loading'
 import { getImg } from '@/service'
 import config from '@/config'
@@ -15,8 +16,15 @@ export default defineComponent({
   },
   props: ['src', 'classes', 'p', 'success', 'fail', 'directive', 'staticPath', 'style', 'click'],
   setup (props) {
+    const getPromise = () => props.staticPath ? Promise.resolve({ data: require('@/assets' + props.staticPath) }) : (props.p || (!config.avatarUseCache || !config.avatarHadCache(config.avatarCacheMap, props.src) ? getImg({ path: props.src }) : config.avatarCacheMap[props.src]))
+    const pWarap = reactive({
+      promise: getPromise()
+    })
+    watch(() => props.src, () => {
+      pWarap.promise = getPromise()
+    })
     return {
-      promise: props.staticPath ? Promise.resolve({ data: require('@/assets' + props.staticPath) }) : (props.p || (!config.avatarUseCache || !config.avatarHadCache(config.avatarCacheMap, props.src) ? getImg({ path: props.src }) : config.avatarCacheMap[props.src])),
+      pWarap,
       successComp: props.success || ({
         props: ['res'],
         render (vue) {

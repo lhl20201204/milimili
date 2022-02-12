@@ -1,5 +1,8 @@
 <template>
-   <keep-alive><component :is="loading===0?loadingComp:(loading===1?successComp:failComp)" :res="res"/></keep-alive>
+  <keep-alive>
+    <component :is="loading===0?loadingComp:(loading===1?successComp:failComp)"
+               :res="res" />
+  </keep-alive>
 </template>
 
 <script>
@@ -67,5 +70,4 @@ export default defineComponent({
 </script>
 
 <style lang="less" scoped>
-
 </style>

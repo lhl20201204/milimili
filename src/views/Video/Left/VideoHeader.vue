@@ -1,13 +1,19 @@
 <template>
   <div class="video-header-title">
-    <h1>{{videoTitle}}</h1>
+    <h1>
+      <Tooltip :text="videoTitle" />
+    </h1>
     <span>{{play.v.length}}播放量&nbsp; * &nbsp; 总弹幕数{{barrage.v.length}} &nbsp; {{time}}</span>
   </div>
 </template>
 
 <script>
 import { defineComponent, inject, ref } from 'vue'
+import Tooltip from '@/components/Tooltip'
 export default defineComponent({
+  components: {
+    Tooltip
+  },
   setup () {
     const { v: video } = inject('video')
     const barrage = inject('barrage')
@@ -33,6 +39,7 @@ export default defineComponent({
     line-height: 26px;
     height: 26px;
     margin-bottom: 8px;
+    width: 550px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

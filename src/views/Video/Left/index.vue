@@ -2,13 +2,14 @@
   <div class="video-left-page">
     <video-header> </video-header>
     <div class="video-container">
-      <Video :v="video[0]" />
+      <Video :v="video[0]"
+             :changeCurrentTime="changeCurrentTime" />
       <Barrage v-for="item in barrage"
                :key="item.barrageId"
                :item="item" />
     </div>
     <video-footer> </video-footer>
-    <VideoControl />
+    <VideoControl :item="video[0]" />
     <VideoDescription />
     <BarrageList />
     <onlineUsersList />
@@ -39,9 +40,11 @@ export default defineComponent({
   setup () {
     const { v: video } = inject('video')
     const { v: barrage } = inject('barrage')
+    const changeCurrentTime = inject('changeCurrentTime')
     return {
       video,
-      barrage
+      barrage,
+      changeCurrentTime
     }
   }
 })

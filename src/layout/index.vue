@@ -40,7 +40,10 @@
     </a-layout-header>
     <a-layout-content style="padding: 0 50px">
       <div :style="{ background: '#fff', padding: layoutContentPadding, minHeight: `calc(100vh - ${(navHeaderHeight.slice(0,-2))*1+(layoutFooterHeight.slice(0,-2))*1}px)` }">
-        <router-view />
+        <a-spin v-if="!$store.state.hadRenderRoute"
+                tip="loading access ..."></a-spin>
+        <NotAccess v-else-if="$store.state.cannotVisitPage.some(v=>$route.path.startsWith('/' + v))" />
+        <router-view v-else />
       </div>
     </a-layout-content>
     <a-layout-footer :style="{'text-align': 'center',
@@ -57,15 +60,19 @@ import config from '@/config'
 import { getAuthority } from '@/utils'
 import { useRoute } from 'vue-router'
 import Avatar from '@/components/Avatar'
+import { useStore } from 'vuex'
+import NotAccess from '@/components/NotAccess'
 export default defineComponent({
   components: {
-    Avatar
+    Avatar,
+    NotAccess
   },
   setup () {
     const instance = getCurrentInstance()
     const { routes } = config
     const navRouter = reactive([])
     const route = useRoute()
+    const store = useStore()
     const pathRouter = navRouter.map(({ path }) => path)
     const state = reactive({
       activateIndex: pathRouter.findIndex(v => route.path.slice(1).startsWith(v))
@@ -77,19 +84,31 @@ export default defineComponent({
       })
     }
 
+    const setUnVisitPage = () => {
+      const userAccess = sessionStorage.getItem('authority') || 'visitor'
+      const cannotVisitor = []
+      for (const r of routes) {
+        if (!(getAuthority(r.access || 'visitor', userAccess))) {
+          cannotVisitor.push(r)
+        }
+      }
+      store.commit('setCannotVisitPage', cannotVisitor.map(({ path }) => path))
+    }
+    setUnVisitPage()
     const time = ref(0)
     let firstRender = false
     watch(
       () => route.path,
       (path) => { // 初始化路由索引
         if (!firstRender && (time.value === 1 || (time.value === 0 && path !== '/login'))) {
-          const userAccess = sessionStorage.getItem('authority') || 'visitor' // 获取渲染权限
+          const userAccess = sessionStorage.getItem('authority') || 'visitor'
           for (const r of routes.filter(v => v.isNav)) {
             if (getAuthority(r.access || 'visitor', userAccess) && !navRouter.includes(r)) {
               navRouter.push(r)
             }
           }
           nextTick(() => {
+            setUnVisitPage() // 共调用俩次，保证任何时候刷新进入都不会出问题
             const pathRouter = navRouter.map(({ path }) => path)
             state.activateIndex = pathRouter.findIndex(v => path.slice(1).startsWith(v))
             hoverComp(instance)

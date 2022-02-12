@@ -43,6 +43,13 @@ export default {
     likes: '点赞',
     collect: '收藏',
     forwarding: '转发',
-    coin: '投币'
-  }
+    coin: '投币',
+    video: '视频',
+    comment: '评论'
+  },
+  adminNavSubRoute: [
+    { path: 'auditVideo', title: '视频审核' },
+    { path: 'auditComment', title: '评论审核' },
+    { path: 'auditComplaint', title: '举报审核' }
+  ]
 }

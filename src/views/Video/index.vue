@@ -12,7 +12,7 @@ import Right from './Right'
 import Left from './Left'
 import s from '@/service/Video'
 import { useStore } from 'vuex'
-import { multipleRequestMerge } from '@/service'
+import { loadById } from '@/service'
 import config from '@/config'
 import { firstToUpperCase } from '@/utils'
 import { message } from 'ant-design-vue'
@@ -30,6 +30,9 @@ export default defineComponent({
       }
     },
     insertComment (data) {
+      data.setHandleItem = function (x) { // socket 没办法传方法
+        this.hadHandleItem = x
+      }
       this.comment.v.push(reactive(data))
       if (data.userId === this.$store.state.userId) {
         message.success('发送评论成功')
@@ -45,8 +48,7 @@ export default defineComponent({
     const store = useStore()
     let video = JSON.parse(JSON.stringify(router.currentRoute.value.query))
     video = {
-      ...video,
-      videoIntroduction: video.introduction
+      ...video
     }
     const instance = getCurrentInstance()
     instance.appContext.config.globalProperties.$socket.emit('videoLogin', {
@@ -128,22 +130,6 @@ export default defineComponent({
         comment.v.sort((a, b) => (new Date(b.sendTime) - new Date(a.sendTime)))
       } else if (type === 3) { // 待扩展不写成else
         comment.v.sort((a, b) => (a.love.length - b.love.length) || (new Date(a.sendTime) - new Date(b.sendTime)))
-      }
-    }
-
-    async function loadById (res, method, params, arr) {
-      const data = await multipleRequestMerge(method, params, arr)
-      if (Array.isArray(res.v)) {
-        res.v.splice(0, res.v.length)
-        res.v.splice(0, 0, ...data)
-        if (Array.isArray(data) && !data.length) {
-          res.v.datahadLoadedButResultNull = true
-        }
-      } else {
-        if (!data) {
-          return console.error('返回的结果为空')
-        }
-        res.v = reactive(data)
       }
     }
 
@@ -233,7 +219,14 @@ export default defineComponent({
           ...videoControl,
           {
             method: s.getUserById,
-            attrs: ['userId']
+            attrs: ['userId'],
+            cb: data => ({
+              ...data,
+              hadHandleItem: false,
+              setHandleItem: function (x) {
+                this.hadHandleItem = x
+              }
+            })
           }
         ]
       ]
@@ -257,7 +250,10 @@ export default defineComponent({
       loadById(
         comment,
         s.getCommentById,
-        params,
+        {
+          videoId: video.videoId,
+          auditing: 0
+        },
         [
           {
             lastResult: (res) => {
@@ -279,7 +275,11 @@ export default defineComponent({
             attrs: ['commentId'],
             cb: (data) => ({
               love: data,
-              loveHadLoad: true
+              loveHadLoad: true,
+              hadHandleItem: false,
+              setHandleItem: function (x) {
+                this.hadHandleItem = x
+              }
             })
           }
         ]

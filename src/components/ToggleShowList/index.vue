@@ -1,9 +1,7 @@
 <template>
   <div>
     <div class="show-list-wrapper"
-         :class="{
-           'not-allow': list.length === 0
-         }"
+         :class="classes||{}"
          @click="folder=!folder">
       <span>{{title}}</span>
       <span>{{list.length}}
@@ -19,17 +17,20 @@
     <div class="show-list"
          v-show="!folder"
          :class="{'solid-height':list.length>20}">
-      <keep-alive>
-        <component :is="childComp" />
-      </keep-alive>
-
-      <keep-alive>
-        <component :is="childComp"
-                   v-for="item in list"
-                   :key="item[keyAttr]"
-                   :item="item" />
-      </keep-alive>
-
+      <List :list="list"
+            nullDescription="暂时没有数据">
+        <template #content>
+          <keep-alive>
+            <component :is="childComp" />
+          </keep-alive>
+          <keep-alive>
+            <component :is="childComp"
+                       v-for="item in list"
+                       :key="item[keyAttr]"
+                       :item="item" />
+          </keep-alive>
+        </template>
+      </List>
     </div>
   </div>
 </template>
@@ -37,12 +38,14 @@
 <script>
 import { defineComponent, ref } from 'vue'
 import { ArrowDownOutlined, ArrowUpOutlined } from '@ant-design/icons-vue'
+import List from '@/components/List'
 export default defineComponent({
   components: {
     ArrowDownOutlined,
-    ArrowUpOutlined
+    ArrowUpOutlined,
+    List
   },
-  props: ['childComp', 'list', 'title', 'keyAttr'],
+  props: ['childComp', 'list', 'title', 'keyAttr', 'classes'],
   setup () {
     const folder = ref(true)
     return {

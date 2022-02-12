@@ -109,6 +109,9 @@ const ret = {
   },
   insertBarrage (params) {
     return post('/api/barrage/insertBarrage', params)
+  },
+  insertComplaint (params) {
+    return post('/api/complaint/insertComplaint', params)
   }
 }
 

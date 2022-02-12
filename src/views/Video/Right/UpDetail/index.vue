@@ -11,12 +11,7 @@
         &nbsp;&nbsp;&nbsp;发消息
       </div>
       <div>
-        <a-tooltip>
-          <template v-slot:title>
-            {{subscribe[0].introduction || defaultIntroduction}}
-          </template>
-          {{subscribe[0].introduction || defaultIntroduction}}
-        </a-tooltip>
+        <Tooltip :text="subscribe[0].introduction || defaultIntroduction" />
       </div>
       <div>
         <button :class="{'had-sub':subscribe[0].subscribe && hadSub(subscribe[0].subscribe,$store.state.userId )>-1}"
@@ -34,8 +29,9 @@ import config from '@/config'
 import s from '@/service/Video'
 import { useStore } from 'vuex'
 import { message } from 'ant-design-vue'
+import Tooltip from '@/components/Tooltip'
 export default defineComponent({
-  components: { DynamicAvatar, Image },
+  components: { DynamicAvatar, Image, Tooltip },
   setup () {
     const { v: subscribe } = inject('subscribe')
     const store = useStore()

@@ -1,11 +1,12 @@
 import axios from 'axios'
 import qs from 'qs'
-
+import { reactive } from 'vue'
 export function get (url, params, config) {
   return axios.get(url, params, config).catch(e => e)
 }
 
 export function post (url, params, config) {
+  const isFormData = params instanceof FormData
   axios.interceptors.request.use(function (config) {
     if (!config.headers['Content-Type']) {
       config.headers['Content-Type'] = 'application/x-www-form-urlencoded'
@@ -14,7 +15,7 @@ export function post (url, params, config) {
   }, function (error) {
     return Promise.reject(error)
   })
-  return axios.post(url, qs.stringify(params), config).catch(e => e)
+  return axios.post(url, isFormData ? params : qs.stringify(params), config).catch(e => e)
 }
 
 async function handleRes (res) {
@@ -28,14 +29,14 @@ async function handleRes (res) {
 }
 
 export async function getImg (params) {
-  return get('/api/getImg', {
+  return get('/api/image/getImg', {
     params,
     responseType: 'blob'
   }).then(handleRes)
 }
 
 export async function getPlayVideo (params) {
-  return get('/api/getVideo', {
+  return get('/api/video/getVideo', {
     params,
     responseType: 'blob'
   }).then(handleRes)
@@ -101,19 +102,25 @@ export async function multipleRequestMerge (method, params, arr) {
   }
 
   const getHandle = (item) => {
-    const { method, attrs, cb, lastResult } = item
+    const { method, attrs, cb, lastResult, getMethod, getParams } = item
     return async res => {
-      lastResult && lastResult(res)
+      if (typeof lastResult === 'function') {
+        const temp = lastResult(res)
+        if (temp) {
+          res = temp
+        }
+      }
+
       const isArray = Array.isArray(item)
       const callBack = cb || (x => x) // cb 函数返回一个挂载在（上次请求结果对象）提供的对象，假设 上次请求结果为 {a: 1} , 本次请求结果为 {b:2}
       //  默认本次结果全部解构拼在（上次请求结果对象），则最终为 {a:1, b:2}
       // 如果像把本次结果存储在（上次请求结果对象） 上的xxx属性， cb设为（data）=> ({xxx: data})，则最终为 {a:1 ,xxx: {b:2} }
       return await Promise.all((Array.isArray(res) ? res : [res]).map(async c => {
-        const resource = await (isArray ? Promise.all(item.map(next => (Array.isArray(next) ? next : [next]).reduce(reduceFn, Promise.resolve(c)))) : method(pick(c, attrs)))
+        const resource = await (isArray ? Promise.all(item.map(next => (Array.isArray(next) ? next : [next]).reduce(reduceFn, Promise.resolve(c)))) : (getMethod ? getMethod(c) : method)(getParams ? getParams(c) : pick(c, attrs)))
         const data = isArray ? flattern(resource) : resource.data
         return {
           ...c,
-          ...callBack(data)
+          ...callBack(data, c)
         }
       }))
     }
@@ -122,4 +129,20 @@ export async function multipleRequestMerge (method, params, arr) {
   return arr.reduce(
     reduceFn
     , Promise.resolve((await method(params)).data))
+}
+
+export async function loadById (res, method, params, arr) {
+  const data = await multipleRequestMerge(method, params, arr)
+  if (Array.isArray(res.v)) {
+    res.v.splice(0, res.v.length)
+    res.v.splice(0, 0, ...data)
+    if (Array.isArray(data) && !data.length) {
+      res.v.datahadLoadedButResultNull = true
+    }
+  } else {
+    if (!data) {
+      return console.error('返回的结果为空')
+    }
+    res.v = reactive(data)
+  }
 }

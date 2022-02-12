@@ -10,9 +10,20 @@ export default createStore({
       size: 14,
       type: 1,
       color: '#FFFFFF'
-    }
+    },
+    cannotVisitPage: [],
+    hadRenderRoute: false
   },
   mutations: {
+    setCannotVisitPage (state, payload) {
+      if (Array.isArray) {
+        state.cannotVisitPage.splice(0, state.cannotVisitPage.length)
+        state.cannotVisitPage.splice(0, 0, ...payload)
+        state.hadRenderRoute = true
+      } else {
+        console.error('payload不是数组')
+      }
+    },
     changeLoginStatus (state, payload) {
       state.login = payload
     },

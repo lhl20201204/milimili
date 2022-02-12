@@ -23,6 +23,9 @@
         <Image :staticPath="videocommentUnlove" />&nbsp;&nbsp;
         <span class="comment-reply"
               @click="showReply=!showReply">回复</span>
+        <Complaint :item="item"
+                   :noprimary="true"
+                   type="comment" />
         <send-comment v-show="showReply"
                       :comment="item"
                       :size="30"> </send-comment>
@@ -36,6 +39,7 @@
 import { defineComponent, getCurrentInstance, onMounted, ref } from 'vue'
 import DynamicAvatar from '@/components/DynamicAvatar'
 import ToggleImages from '@/components/ToggleImages'
+import Complaint from '@/components/Complaint'
 import Image from '@/components/Image'
 import SendComment from '../SendComment'
 import config from '@/config'
@@ -51,7 +55,8 @@ export default defineComponent({
     DynamicAvatar,
     ToggleImages,
     Image,
-    SendComment
+    SendComment,
+    Complaint
   },
   setup (props) {
     const store = useStore()
@@ -121,7 +126,7 @@ export default defineComponent({
         color: rgb(153, 162, 170);
       }
       .comment-reply {
-        padding: 0 5px;
+        padding: 0 15px 0 10px;
         border-radius: 6px;
         &:hover {
           background: hsl(0, 4%, 50%);

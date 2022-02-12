@@ -1,18 +1,25 @@
 <template>
   <div class="video-control-item">
-    <VideoControlItem v-for="(item, index) in videoControlSubRoute"
-                      :attr="item"
-                      :key="index" />
+    <span>
+      <VideoControlItem v-for="(item, index) in videoControlSubRoute"
+                        :attr="item"
+                        :key="index" />
+    </span>
+    <Complaint :item="item"
+               type="video" />
   </div>
 </template>
 
 <script>
 import { defineComponent } from 'vue'
 import config from '@/config'
-import VideoControlItem from './VideoControlItem.vue'
+import VideoControlItem from './VideoControlItem'
+import Complaint from '@/components/Complaint'
 export default defineComponent({
+  props: ['item'],
   components: {
-    VideoControlItem
+    VideoControlItem,
+    Complaint
   },
   setup () {
     return {
@@ -24,8 +31,13 @@ export default defineComponent({
 
 <style lang="less" scoped>
 .video-control-item {
-  padding: 20px 10px;
   display: flex;
+  align-items: center;
   border-bottom: 1px solid rgb(229, 233, 240);
+  > span {
+    flex: 1;
+    padding: 20px 10px;
+    display: flex;
+  }
 }
 </style>

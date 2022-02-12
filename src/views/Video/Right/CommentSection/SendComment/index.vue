@@ -34,6 +34,7 @@ export default defineComponent({
     const instance = getCurrentInstance()
     async function sendComment () {
       const params = {
+        auditing: 0,
         videoId: props.comment ? props.comment.videoId : video[0].videoId,
         userId: store.state.userId,
         sendTime: config.time(),
@@ -54,7 +55,11 @@ export default defineComponent({
         userId: store.state.userId,
         account: store.state.userName,
         avatar: store.state.userAvatarSrc,
-        commentId: data.insertId
+        commentId: data.insertId,
+        hadHandleItem: false,
+        setHandleItem: function (x) {
+          this.hadHandleItem = x
+        }
       })
 
       instance.appContext.config.globalProperties.$socket.emit('insertComment', obj)

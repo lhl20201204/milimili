@@ -1,22 +1,25 @@
 <template>
-
-  <comment-item v-for="item in comment"
-                :key="item.commentId"
-                :item="item"
-                :parentCommentId="parentCommentId"></comment-item>
-  <div v-if="!comment || (comment.length === 0 && !comment.datahadLoadedButResultNull)"
-       class="a-spin-wrapper">
-    <a-spin tip="评论正在加载中不要急..." />
-  </div>
+  <List :list="comment"
+        loadingTip="comment loading ..."
+        nullDescription="暂时没有评论">
+    <template #content>
+      <comment-item v-for="item in comment"
+                    :key="item.commentId"
+                    :item="item"
+                    :parentCommentId="parentCommentId"></comment-item>
+    </template>
+  </List>
 
 </template>
 
 <script>
 import { defineComponent, inject } from 'vue'
-import CommentItem from './CommentItem.vue'
+import CommentItem from './CommentItem'
+import List from '@/components/List'
 export default defineComponent({
   components: {
-    CommentItem
+    CommentItem,
+    List
   },
   props: ['parentCommentId'],
   setup (props) {
@@ -29,9 +32,4 @@ export default defineComponent({
 </script>
 
 <style lang="less" scoped>
-.a-spin-wrapper {
-  width: 100%;
-  padding-top: 20px;
-  text-align: center;
-}
 </style>

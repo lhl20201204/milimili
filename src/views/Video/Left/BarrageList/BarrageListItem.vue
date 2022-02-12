@@ -9,12 +9,7 @@
       </span>
       <span>{{item ? getSendTime: '发送时间'}}</span>
       <span>
-        <a-tooltip>
-          <template v-slot:title>
-            {{item ? item.content : '弹幕内容'}}
-          </template>
-          {{item ? item.content : '弹幕内容'}}
-        </a-tooltip>
+        <Tooltip :text="item ? item.content : '弹幕内容'" />
       </span>
       <span>{{item ? item.generateTime : '弹幕生成时间'}}</span>
     </div>
@@ -24,8 +19,9 @@
 <script>
 import { computed, defineComponent } from 'vue'
 import DynamicAvatar from '@/components/DynamicAvatar'
+import Tooltip from '@/components/Tooltip'
 export default defineComponent({
-  components: { DynamicAvatar },
+  components: { DynamicAvatar, Tooltip },
   props: ['item'],
   setup (props) {
     function transform (origin, f = 3) {

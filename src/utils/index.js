@@ -21,7 +21,7 @@ export function firstToUpperCase (v) {
 }
 
 export function getImgSrc (path) {
-  return config.baseUrl + 'getImg?path=' + path
+  return config.baseUrl + 'image/getImg?path=' + path
 }
 
 export function fillId (id) {

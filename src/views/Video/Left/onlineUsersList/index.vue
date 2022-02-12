@@ -10,7 +10,7 @@
 <script>
 import { defineComponent, inject } from 'vue'
 import ToggleShowList from '@/components/ToggleShowList'
-import onlineUsersListItem from './onlineUsersListItem.vue'
+import onlineUsersListItem from './onlineUsersListItem'
 export default defineComponent({
   components: {
     ToggleShowList
