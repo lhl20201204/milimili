@@ -1,5 +1,6 @@
 <template>
   <Image :src="src"
+         :click="click||(()=>null)"
          :style="{
   width: `${width}px`,
   height: `${height}px`,
@@ -12,7 +13,7 @@
 import { defineComponent, ref } from 'vue'
 import Image from '@/components/Image'
 export default defineComponent({
-  props: ['src', 'size', 'radius'],
+  props: ['src', 'size', 'radius', 'click'],
   components: {
     Image
   },

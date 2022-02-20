@@ -1,13 +1,19 @@
+<template>
+  <Layout />
+</template>
+
 <script>
 import Layout from '@/layout'
-export default {
+import { defineComponent } from 'vue'
+
+export default defineComponent({
   components: {
     Layout
   },
-  render () {
-    return <Layout />
+  setup () {
+
   }
-}
+})
 </script>
 
 <style lang="less" scoped>

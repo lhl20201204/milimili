@@ -1,7 +1,9 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import { routes } from './routes'
+import store from '@/store'
 import config from '@/config'
-import { pageLeaveVideoPage } from '../main'
+import { pageLeaveVideoPage, pageLeaveMessagePage } from '../main'
+
 const router = createRouter({
   history: createWebHashHistory(process.env.BASE_URL),
   routes
@@ -10,6 +12,9 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   if (from.path.startsWith('/video')) {
     pageLeaveVideoPage()
+  }
+  if (store.state.isInChatRoom) {
+    pageLeaveMessagePage()
   }
 
   if (to.path !== '/login') {

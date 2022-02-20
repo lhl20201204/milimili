@@ -3,7 +3,7 @@
                   :column="1"
                   bordered>
     <a-descriptions-item label="封面">
-      <Image :src="item.coverSrc" />
+      <Image :src="item.coverSrc+'?'+refreshTime" />
     </a-descriptions-item>
     <a-descriptions-item label="up主">
       <DynamicAvatar :item="item" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import { defineComponent } from 'vue'
+import { defineComponent, inject } from 'vue'
 import Image from '@/components/Image'
 import Tooltip from '@/components/Tooltip'
 import DynamicAvatar from '@/components/DynamicAvatar'
@@ -46,6 +46,10 @@ export default defineComponent({
     DynamicAvatar
   },
   setup (props) {
+    const { v: refreshTime } = inject('refreshTime')
+    return {
+      refreshTime
+    }
   }
 
 })

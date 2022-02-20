@@ -9,34 +9,51 @@ const ret = {
     formdata.append(attr, new File([content], name))
     return await mehtods(formdata, progress)
   },
-  async _uploadVideo (params, { videoProgress, imageProgress }) {
+  async _uploadVideo (params, { videoProgress, imageProgress, videoId }) {
     const { video, image, title, videoIntroduction, tag } = params
     let insertId
     let prefixInsertId
     let videoName
     let coverSrc
     try {
-      const { data } = await ret.insertVideo({
-        time: config.time(),
-        userId: store.state.userId,
-        videoTitle: title,
-        videoIntroduction,
-        auditing: config.videoAuditingStatus
-      })
-      if (data.affectedRows !== 1) {
-        throw new Error()
+      if (!videoId) {
+        const { data } = await ret.insertVideo({
+          time: config.time(),
+          userId: store.state.userId,
+          videoTitle: title,
+          videoIntroduction,
+          auditing: config.videoAuditingStatus
+        })
+        if (data.affectedRows !== 1) {
+          throw new Error()
+        }
+        insertId = data.insertId
+      } else {
+        insertId = Number(videoId)
       }
-      insertId = data.insertId
       prefixInsertId = fillId(insertId)
       videoName = `mv${prefixInsertId}.mp4`
       coverSrc = `video_${insertId}.png`
-      const { data: data2 } = await ret.updateVideo({ videoId: insertId, coverSrc: 'video_' + insertId })
+      const { data: data2 } = await ret.updateVideo({
+        videoId: insertId,
+        videoTitle: title,
+        videoIntroduction,
+        coverSrc: 'video_' + insertId,
+        auditing: config.videoAuditingStatus
+      })
       if (data2.affectedRows !== 1) {
         throw new Error()
       }
+      if (videoId) {
+        await ret.deleteTag({ videoId: insertId })
+      }
       await Promise.all(tag.map(v => ({ tagName: v, videoId: insertId })).map(w => ret.insertTag(w))).catch(e => { throw new Error(e) })
-      await ret._uploadFormData(image, 'image', coverSrc, imageProgress, ret.uploadImage)
-      await ret._uploadFormData(video, 'video', videoName, videoProgress, ret.uploadVideo)
+      if (image) {
+        await ret._uploadFormData(image, 'image', coverSrc, imageProgress, ret.uploadImage)
+      }
+      if (video) {
+        await ret._uploadFormData(video, 'video', videoName, videoProgress, ret.uploadVideo)
+      }
     } catch (e) {
       if (insertId) {
         await ret.deleteVideo({ videoId: insertId })

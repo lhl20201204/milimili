@@ -108,7 +108,7 @@ export default defineComponent({
     const store = useStore()
     const failReason = ref('')
     let loading = false
-    const handleItem = async (method, auditing, content) => {
+    const handleItem = async (method, auditing, content, isDelete) => {
       if (loading) {
         return message.error('操作中请稍后')
       }
@@ -122,29 +122,17 @@ export default defineComponent({
       await s.insertNotice({
         time: config.time(),
         userId: store.state.userId,
+        type: props.item.type,
+        typeId: props.item[props.item.type + 'Id'],
         noticedUserId: props.item.userId,
-        content
+        content,
+        status: isDelete ? config.auditStatusDelete : config.auditStatusBeReturned
       })
       await s.updateComplaint({
         complaintId: props.item.complaintId,
         auditing: config.complaintDoneStatus
       })
       loading = false
-      console.log(props.item)
-      console.log({
-        complaintId: props.item.complaintId,
-        auditing: config.complaintDoneStatus
-      })
-      console.log({
-        ...obj,
-        auditing
-      })
-      console.log({
-        time: config.time(),
-        userId: store.state.userId,
-        noticedUserId: props.item.userId,
-        content
-      })
     }
     const needUserEditItem = async () => {
       if (!failReason.value) {
@@ -154,11 +142,11 @@ export default defineComponent({
         return message.error('没有setHandleItem方法')
       }
       if (props.item.type === 'video') {
-        await handleItem(uploadService.updateVideo, config.videoReturned,
-          '您的稿件【【' + props.item.videoTitle + '】】(mv' + props.item.videoId + ')被退回了，原因：' + failReason.value)
+        await handleItem(uploadService.updateVideo, config.videoNeedEdit,
+          failReason.value)
       } else if (props.item.type === 'comment') {
-        await handleItem(s.updateComment, config.commentReturned,
-          '您在视频(mv' + props.item.videoId + ')的评论原内容【【' + props.item.content + '】】被退回了，原因：' + failReason.value
+        await handleItem(s.updateComment, config.commentNeedEdit,
+          failReason.value
         )
       } else {
         return message.error('暂不支持')
@@ -176,11 +164,9 @@ export default defineComponent({
         return message.error('没有setHandleItem方法')
       }
       if (props.item.type === 'video') {
-        await handleItem(uploadService.deleteVideo, config.videoBeDeleted,
-          '您的稿件【【' + props.item.videoTitle + '】】(mv' + props.item.videoId + ')被删除了了，原因：' + failReason.value)
+        await handleItem(uploadService.deleteVideo, config.videoBeDeleted, failReason.value, true)
       } else if (props.item.type === 'comment') {
-        await handleItem(s.deleteComment, config.commentBeDeleted,
-          '您在视频(mv' + props.item.videoId + ')的评论原内容【【' + props.item.content + '】】被删除了，原因：' + failReason.value
+        await handleItem(s.deleteComment, config.commentBeDeleted, failReason.value, true
         )
       } else {
         return message.error('暂不支持')

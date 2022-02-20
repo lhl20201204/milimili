@@ -126,6 +126,12 @@ export default defineComponent({
       const targetPath = '/' + item.path
       if (item.type !== 'hover') {
         if (this.$route.path !== targetPath) {
+          if (item.path === 'user') {
+            return this.$router.push({
+              path: config.defaultUserRoutePath,
+              query: { userId: store.state.userId }
+            })
+          }
           this.$router.push(targetPath)
         }
       }

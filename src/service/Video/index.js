@@ -33,7 +33,7 @@ const ret = {
       return config.requestFail
     }
     options = options || {}
-    const { canContinueClick } = options
+    const { canContinueClick, successAddAttr } = options
     const id = !canContinueClick ? config[`currentUserHad${M}`](ctx[attr], params) : -1
     if (id < 0) {
       const { data } = await ret[`insert${M}`](params)
@@ -43,7 +43,11 @@ const ret = {
       }
       const obj = {}
       obj[attr + 'Id'] = data.insertId
-      ctx[attr].push(reactive({ ...params, ...obj }))
+      const addAttr = successAddAttr || (() => ({}))
+      ctx[attr].push(reactive({ ...params, ...obj, ...addAttr() }))
+      if (ctx[attr].length > 0) {
+        ctx[attr].datahadLoadedButResultNull = false
+      }
       return config.insertSuccess
     } else {
       const attrId = ctx[attr][id][attr + 'Id']
@@ -61,6 +65,9 @@ const ret = {
         return config.requestFail
       }
       ctx[attr].splice(id, 1)
+      if (ctx[attr].length === 0) {
+        ctx[attr].datahadLoadedButResultNull = true
+      }
       return config.deleteSuccess
     }
   },
@@ -80,7 +87,15 @@ const ret = {
     return post('/api/comment/getCommentById', params)
   },
   getUserById (params) {
-    return post('/api/user/getUserById', params)
+    if (config.userMessageUseCache && !config.userHadCache(config.userMessageCacheMap, params.userId)) {
+      config.userMessageCacheMap[params.userId] = new Promise((resolve) => {
+        (async () => {
+          const { data } = await post('/api/user/getUserById', params)
+          resolve({ data })
+        })()
+      })
+    }
+    return config.userMessageUseCache && config.userHadCache(config.userMessageCacheMap, params.userId) ? config.userMessageCacheMap[params.userId] : post('/api/user/getUserById', params)
   },
   getLoveById (params) {
     return post('/api/comment/getLoveById', params)

@@ -15,7 +15,7 @@ const videoControlMethods = ((arr) => {
 
 export default {
   hasAccessNotLogin () {
-    return sessionStorage.getItem('rememberPassword') && sessionStorage.getItem('currentUser') && sessionStorage.getItem('currentUserId') && sessionStorage.getItem('currentUserAvatarSrc')
+    return sessionStorage.getItem('rememberPassword') && sessionStorage.getItem('currentUser') && sessionStorage.getItem('currentUserId') && sessionStorage.getItem('currentUserAvatarSrc') && sessionStorage.getItem('currentUserIntroduction') && sessionStorage.getItem('currentUserTime')
   },
   time (t) {
     return (t ? moment(t) : moment()).format('YYYY-MM-DD HH:mm:ss')
@@ -30,6 +30,9 @@ export default {
   },
   ...videoControlMethods,
   avatarHadCache (obj, key) {
+    return obj && obj[key] instanceof Promise
+  },
+  userHadCache (obj, key) { // 分开写方便以后该逻辑
     return obj && obj[key] instanceof Promise
   }
 }

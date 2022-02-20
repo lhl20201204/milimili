@@ -43,7 +43,7 @@ export default defineComponent({
           dataIndex: 'complaintTime'
         },
         {
-          title: '查看详情',
+          title: '操作',
           customRender: ({ record }) => (<ShowDetailItem item={record}> </ShowDetailItem>)
         }
       ]

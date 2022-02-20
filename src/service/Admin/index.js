@@ -23,6 +23,9 @@ const ret = {
   },
   getCommentDetail (params) {
     return post('/api/comment/getCommentDetail', params)
+  },
+  getAuditingCommentList (params) {
+    return post('/api/comment/getAuditingCommentList', params)
   }
 }
 export default ret

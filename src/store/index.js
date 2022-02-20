@@ -6,13 +6,16 @@ export default createStore({
     userName: 'visitor',
     userId: 0,
     userAvatarSrc: '',
+    userIntroduction: '',
+    userTime: '',
     controlBarrage: {
       size: 14,
       type: 1,
       color: '#FFFFFF'
     },
     cannotVisitPage: [],
-    hadRenderRoute: false
+    hadRenderRoute: false,
+    isInChatRoom: false
   },
   mutations: {
     setCannotVisitPage (state, payload) {
@@ -36,10 +39,19 @@ export default createStore({
     changeUserAvatarSrc (state, payload) {
       state.userAvatarSrc = payload
     },
+    changeUserIntroduction (state, payload) {
+      state.userIntroduction = payload
+    },
     controlBarrageSetting (state, payload) {
       for (const attr in payload) {
         state.controlBarrage[attr] = payload[attr]
       }
+    },
+    changeIsInChatRoom (state, payload) {
+      state.isInChatRoom = payload
+    },
+    changeUserTime (state, payload) {
+      state.userTime = payload
     }
   },
   actions: {

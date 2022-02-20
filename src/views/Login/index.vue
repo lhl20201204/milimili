@@ -58,17 +58,19 @@ export default defineComponent({
     const storage = sessionStorage // 可能会换sessionstorage待定
     const router = useRouter()
     const store = useStore()
-    const onLogin = (username, userId, avatar) => {
+    const onLogin = (username, userId, avatar, introduction, time) => {
       store.commit('changeLoginStatus', true)
       store.commit('changeUserStatus', username)
       store.commit('changeUserId', userId)
       store.commit('changeUserAvatarSrc', avatar)
+      store.commit('changeUserIntroduction', introduction)
+      store.commit('changeUserTime', time)
       router.push('/home')
       message.success(`${username} 您好！欢迎登录milimili`)
     }
 
     if (config.hasAccessNotLogin()) {
-      onLogin(storage.getItem('currentUser'), storage.getItem('currentUserId'), storage.getItem('currentUserAvatarSrc'))
+      onLogin(storage.getItem('currentUser'), storage.getItem('currentUserId'), storage.getItem('currentUserAvatarSrc'), storage.getItem('currentUserIntroduction'), storage.getItem('currentUserTime'))
     }
     const formState = reactive({
       username: '',
@@ -91,7 +93,9 @@ export default defineComponent({
       storage.setItem('currentUserId', data.userId)
       storage.setItem('currentUserAvatarSrc', data.avatar || config.userDefaultImagePath)
       storage.setItem('authority', data.authority || '')
-      onLogin(username, data.userId, storage.getItem('currentUserAvatarSrc'))
+      storage.setItem('currentUserIntroduction', data.introduction || config.defaultIntroduction)
+      storage.setItem('currentUserTime', data.time)
+      onLogin(username, data.userId, storage.getItem('currentUserAvatarSrc'), storage.getItem('currentUserIntroduction'), data.time)
     }
 
     const onFinishFailed = errorInfo => {

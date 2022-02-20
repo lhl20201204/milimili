@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import { defineComponent, inject, ref } from 'vue'
+import { defineComponent, inject, ref, watch } from 'vue'
 import AuditVideoDetail from './AuditVideoDetail'
 import AuditHandle from './AuditHandle'
 import List from '@/components/List'
@@ -40,6 +40,11 @@ export default defineComponent({
   setup () {
     const { v: video } = inject('video')
     const current = ref(1)
+    watch(() => video.length, () => {
+      if (current.value > video.length) {
+        current.value = 1
+      }
+    })
     return {
       video,
       current

@@ -1,8 +1,14 @@
 <template>
-<div class="video-list-item" @click="goVideoDetail">
-  <Image :src="item.coverSrc" classes="video-list-item-src" :fail="failComp"/>
-  <span class="video_title">“{{item.videoTitle}}”</span>
-</div>
+  <div class="video-list-item"
+       :class="{
+    'video-list-max-item': isAuto
+  }"
+       @click="goVideoDetail">
+    <Image :src="item.coverSrc"
+           classes="video-list-item-src"
+           :fail="failComp" />
+    <span class="video_title">“{{item.videoTitle}}”</span>
+  </div>
 </template>
 
 <script>
@@ -10,8 +16,9 @@ import { defineComponent } from 'vue'
 import Image from '@/components/Image'
 import config from '@/config'
 import { useRouter } from 'vue-router'
+import _ from 'lodash'
 export default defineComponent({
-  props: ['item'],
+  props: ['item', 'isAuto'],
   components: {
     Image
   },
@@ -20,7 +27,7 @@ export default defineComponent({
     function goVideoDetail () {
       router.push({
         path: '/video',
-        query: props.item
+        query: _.pick(props.item, config.videoDetailRouteAttrSubRoute)
       })
     }
     return {
@@ -41,6 +48,16 @@ export default defineComponent({
   justify-content: center;
   align-items: center;
   position: relative;
+}
+
+.video-list-max-item {
+  width: 100%;
+  height: 100%;
+  ~ .video_title {
+    transition: all 2.3s;
+    padding-top: 180px;
+    font-size: 20px;
+  }
 }
 
 .video-list-item-src {
@@ -81,5 +98,4 @@ export default defineComponent({
   white-space: normal;
   text-overflow: unset;
 }
-
 </style>

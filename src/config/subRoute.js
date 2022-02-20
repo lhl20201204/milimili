@@ -51,5 +51,62 @@ export default {
     { path: 'auditVideo', title: '视频审核' },
     { path: 'auditComment', title: '评论审核' },
     { path: 'auditComplaint', title: '举报审核' }
+  ],
+  userNavSubRoute: [
+    {
+      path: 'homePage',
+      redirectPath: 'homePage/likes',
+      title: '主页',
+      children: [
+        { path: 'likes', title: '点赞TA视频的人' },
+        { path: 'collect', title: '收藏TA视频的人' },
+        { path: 'forwarding', title: '转发TA视频的人' },
+        { path: 'coin', title: '给TA视频投币的人' }
+      ]
+    },
+    { path: 'uploadPage', title: '投稿' },
+    { path: 'dynamicPage', title: '动态' },
+    {
+      path: 'editPage',
+      title: '编辑',
+      onlySelfView: true,
+      redirectPath: 'editPage/videoEdit',
+      children: [
+        { path: 'videoEdit', title: '视频编辑' },
+        { path: 'commentEdit', title: '评论编辑' }
+      ]
+    },
+    {
+      path: 'messagePage',
+      title: '消息',
+      onlySelfView: true,
+      redirectPath: 'messagePage/noticePage',
+      children: [
+        { path: 'noticePage', title: '系统通知' },
+        { path: 'infoPage', title: '私信' },
+        { path: 'lovePage', title: '收到的点赞' },
+        { path: 'replyPage', title: '回复' }
+      ]
+    }
+  ],
+  videoDetailRouteAttrSubRoute: ['videoId', 'time', 'rank', 'userId', 'coverSrc', 'videoTitle', 'videoIntroduction', 'auditing'],
+  userHomeControlAttr: [
+    { means: '视频总播放量', attr: 'play' },
+    { means: '视频总点赞数', attr: 'likes' },
+    { means: '视频总转发量', attr: 'forwarding' },
+    { means: '视频总投币数', attr: 'coin' },
+    { means: '视频总收藏量', attr: 'collect' }
+  ],
+  auditStatusMeans: [
+    [
+      '审核成功通知',
+      '删除通知',
+      '退回通知'
+    ],
+    [
+      '通过了审核',
+      '因违反规则被管理员删除了。删除原因：',
+      '经审核涉及不适宜的内容被退回了，需要修改重新提交审核（可在个人中心下的编辑修改）。退回原因：'
+    ]
   ]
 }

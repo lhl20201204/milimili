@@ -14,13 +14,17 @@ import { defineComponent, provide, reactive } from 'vue'
 import config from '@/config'
 import AdminNav from './AdminNav'
 import s from '@/service/Admin'
+import userService from '@/service/User'
 import videoService from '@/service/Video'
 import { loadById } from '@/service'
+import { fillId } from '@/utils'
+import { useStore } from 'vuex'
 export default defineComponent({
   components: {
     AdminNav
   },
   setup (props) {
+    const store = useStore()
     const formStyle = reactive({
       height: ((config.navHeaderHeight.slice(0, -2)) * 1 + (config.layoutContentPadding.slice(0, -2)) * 2 + (config.layoutFooterHeight.slice(0, -2)) * 1) + 'px'
     })
@@ -28,11 +32,20 @@ export default defineComponent({
       v: []
     })
 
+    const comment = reactive({
+      v: []
+    })
+
     const complaint = reactive({
       v: []
     })
 
+    const refreshTime = reactive({
+      v: new Date()
+    })
+
     const refresh = async (loadingProcessNotUpdate = false) => {
+      refreshTime.v = new Date()
       loadById(video, s.getAuditingVideoList, {
         videoAuditingStatus: config.videoAuditingStatus
       }, [
@@ -68,7 +81,11 @@ export default defineComponent({
             }
           })
         }
-      ])
+      ], {
+        filter (data) {
+          return data.filter(r => r.userId !== store.state.userId)
+        }
+      })
       loadById(complaint, s.getAuditingComplaintList, {
         complaintAuditingStatus: config.complaintAuditingStatus
       }, [
@@ -110,11 +127,18 @@ export default defineComponent({
               return ret
             }
           },
+          cache: {
+            getEnable (r) {
+              return r.type === 'video'
+            },
+            mapName: 'getVideoDetail',
+            key: ['videoId']
+          },
           getMethod: (res) => {
             return res.type === 'video' ? s.getVideoDetail : s.getCommentDetail
           },
           getParams: (res) => {
-            return res.type === 'video' ? { videoId: res.typeId } : { commentId: res.typeId }
+            return res.type === 'video' ? { videoId: res.typeId, auditing: config.videoHadAuditedStatus } : { commentId: res.typeId }
           },
           cb: (data, res) => res.type === 'video' ? ({
             ...data[0]
@@ -136,12 +160,132 @@ export default defineComponent({
             tagHadLoad: true
           })
         }
-      ])
+      ], {
+        filter (data) {
+          return data.filter(r => r.targetUserId !== store.state.userId)
+        }
+      })
+
+      const commentArr = [
+        {
+          lastResult: (res) => {
+            if (!loadingProcessNotUpdate) {
+              comment.v.splice(0, comment.v.length)
+              comment.v.splice(0, 0, ...(Array.isArray(res) ? res : [res]).map(r => ({
+                ...r,
+                notice: [],
+                video: {},
+                replyComment: {},
+                replyUser: {
+                  avatar: config.avatarLoading,
+                  account: config.accountLoading,
+                  introduction: config.introductionLoading
+                },
+                user: {
+                  avatar: config.avatarLoading,
+                  account: config.accountLoading,
+                  introduction: config.introductionLoading
+                },
+                hadHandleItem: false,
+                setHandleItem: function (x) {
+                  this.hadHandleItem = x
+                }
+              })))
+            }
+          },
+          method: userService.getNoticeById,
+          getParams (r) {
+            return {
+              type: 'comment',
+              typeId: r.commentId
+            }
+          },
+          cb (res) {
+            return {
+              notice: res,
+              noticeHadLoad: true
+            }
+          }
+        },
+        {
+          method: videoService.getUserById,
+          getParams (r) {
+            return {
+              userId: r.replyUserId
+            }
+          },
+          cb (r) {
+            return {
+              replyUser: r,
+              replyUserHadLoad: true
+            }
+          }
+        },
+        {
+          method: videoService.getUserById,
+          attrs: ['userId'],
+          cb (r) {
+            return {
+              user: r,
+              userHadLoad: true
+            }
+          }
+        }
+      ]
+      commentArr.serial = true
+      loadById(comment, s.getAuditingCommentList, {
+        auditing: config.commentAuditingStatus
+      }, [
+        [
+          commentArr,
+          {
+            cache: {
+              mapName: 'getVideoDetail',
+              key: ['videoId']
+            },
+            method: s.getVideoDetail,
+            attrs: ['videoId'],
+            cb (res) {
+              return {
+                video: res[0],
+                videoHadLoad: true
+              }
+            }
+          },
+          {
+            getMethod (r) {
+              if (fillId(r.parentCommentId) === config.rootCommentId) {
+                return async () => ({ data: [{ content: '无' }] })
+              }
+              return s.getCommentDetail
+            },
+            getParams (r) {
+              return {
+                commentId: r.parentCommentId
+              }
+            },
+            cb (r) {
+              return {
+                replyComment: r[0],
+                setHandleItem: function (x) {
+                  this.hadHandleItem = x
+                }
+              }
+            }
+          }
+        ]
+      ], {
+        filter (data) {
+          return data.filter(r => r.userId !== store.state.userId)
+        }
+      })
     }
     refresh()
     provide('refresh', refresh)
+    provide('refreshTime', refreshTime)
     provide('video', video)
     provide('complaint', complaint)
+    provide('comment', comment)
     return {
       formStyle,
       refresh

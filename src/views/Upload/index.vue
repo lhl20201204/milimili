@@ -9,8 +9,7 @@
               :wrapper-col="{ span: 12 }"
               @finish="onFinish"
               @finishFailed="onFinishFailed">
-        <a-form-item label="
-                   视频封面">
+        <a-form-item :label="item?'重选封面*':'视频封面'">
           <span>
             <input type="file"
                    id="imageFile"
@@ -25,11 +24,11 @@
                 </div>
               </div>
             </label>
-            <Progress v-if="loading"
+            <Progress v-if="loading&&form.image"
                       :style="imageProgressStyle" />
           </span>
         </a-form-item>
-        <a-form-item label="上传视频">
+        <a-form-item :label="item?'重选视频*':'上传时频'">
           <span>
             <input type="file"
                    id="videoFile"
@@ -42,7 +41,7 @@
                 <Tooltip :text="!form.video? 'select video' : form.video.name" />
               </div>
             </label>
-            <Progress v-if="loading"
+            <Progress v-if="loading&&form.video"
                       :style="videoProgressStyle" />
           </span>
         </a-form-item>
@@ -78,7 +77,7 @@
         <a-form-item>
           <a-button type="primary"
                     html-type="submit">
-            upload
+            {{item?'修改mv'+item.videoId: '上传'}}
           </a-button>
         </a-form-item>
       </a-form>
@@ -90,26 +89,41 @@
 
 import { UploadOutlined } from '@ant-design/icons-vue'
 import { message } from 'ant-design-vue'
-import { defineComponent, reactive, ref } from 'vue'
+import { defineComponent, reactive, ref, watch } from 'vue'
 import s from '@/service/Upload'
 import Progress from '@/components/Progress'
 import Tooltip from '@/components/Tooltip'
 import _ from 'lodash'
-// import config from '@/config'
 export default defineComponent({
+  props: ['item'],
   components: {
     UploadOutlined,
     Progress,
     Tooltip
   },
-  setup () {
+  setup (props) {
     const form = reactive({
       title: '',
       videoIntroduction: '',
       tag: [],
       image: null,
-      video: null
+      video: null,
+      videoId: null
     })
+
+    if (props.item) {
+      const init = () => {
+        form.title = props.item.videoTitle
+        form.videoIntroduction = props.item.videoIntroduction
+        form.tag = props.item.tag.map(v => v.tagName)
+        form.image = props.item.image
+        form.video = props.item.video
+        form.videoId = props.item.videoId
+      }
+      init()
+      watch(() => props.item, init)
+    }
+
     const videoProgressStyle = reactive({
       ratio: 0
     })
@@ -124,11 +138,11 @@ export default defineComponent({
       form.video = x.target.files[0]
     }
     const validate = () => {
-      if (!form.video) {
+      if (!form.video && !form.videoId) {
         message.error('待上传视频不能为空')
         return false
       }
-      if (!form.image) {
+      if (!form.image && !form.videoId) {
         message.error('封面图片不能为空')
         return false
       }
@@ -157,17 +171,25 @@ export default defineComponent({
       try {
         loading.value = true
         await s._uploadVideo({
-          ...form
+          ...{
+            title: form.title,
+            videoIntroduction: form.videoIntroduction,
+            tag: form.tag,
+            image: form.image,
+            video: form.video
+          }
         }, {
           videoProgress,
-          imageProgress
+          imageProgress,
+          videoId: props.item ? form.videoId : null
         })
+
         form.videoIntroduction = ''
         form.title = ''
         form.tag.splice(0, form.tag.length)
-        message.success('上传成功')
+        message.success(props.item ? '更新成功' : '上传成功')
       } catch (e) {
-        message.error('上传失败')
+        message.error(props.item ? '更新失败' : '上传失败')
       } finally {
         loading.value = false
       }
@@ -179,7 +201,7 @@ export default defineComponent({
 
     function addTag (x) {
       if (!x) {
-        return message.error('不能添加空标签')
+        return
       }
       if (form.tag.includes(x)) {
         return message.error('不能添加重复标签')

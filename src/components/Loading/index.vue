@@ -57,6 +57,7 @@ export default defineComponent({
           loading.value = 1
         }).catch((rej1) => {
           res.value = rej1
+          console.log(rej1)
           loading.value = 2
         })
       }

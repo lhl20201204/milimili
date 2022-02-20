@@ -16,7 +16,7 @@ export default defineComponent({
   },
   props: ['src', 'classes', 'p', 'success', 'fail', 'directive', 'staticPath', 'style', 'click'],
   setup (props) {
-    const getPromise = () => props.staticPath ? Promise.resolve({ data: require('@/assets' + props.staticPath) }) : (props.p || (!config.avatarUseCache || !config.avatarHadCache(config.avatarCacheMap, props.src) ? getImg({ path: props.src }) : config.avatarCacheMap[props.src]))
+    const getPromise = () => props.staticPath ? Promise.resolve({ data: require('@/assets' + props.staticPath) }) : (props.p || getImg({ path: props.src }))
     const pWarap = reactive({
       promise: getPromise()
     })
@@ -28,9 +28,6 @@ export default defineComponent({
       successComp: props.success || ({
         props: ['res'],
         render (vue) {
-          if (props.src && config.avatarUseCache && !config.avatarHadCache(config.avatarCacheMap, props.src)) {
-            config.avatarCacheMap[props.src] = Promise.resolve({ data: vue.$props.res.data })
-          }
           return <img v-src={vue.$props.res.data} onClick={props.click} class={props.classes || ''} style={(props.style || {})} v-object={(props.directive || {})} />
         }
       }),

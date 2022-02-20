@@ -1,11 +1,24 @@
 <template>
-  <div>评论审核</div>
+  <EditWrapper :list="comment"
+               :comp="AuditCommentItem" />
 </template>
 
 <script>
-import { defineComponent } from 'vue'
-
+import { defineComponent, inject } from 'vue'
+import EditWrapper from '@/components/EditWrapper'
+import AuditCommentItem from './AuditCommentItem'
 export default defineComponent({
+  components: {
+    EditWrapper
+  },
+  setup () {
+    const { v: comment } = inject('comment')
+    console.log(comment)
+    return {
+      comment,
+      AuditCommentItem
+    }
+  }
 
 })
 </script>

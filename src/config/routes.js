@@ -43,17 +43,7 @@ export const routes = [
     isNav: true,
     path: 'user',
     icon: UserOutlined,
-    nested: false,
-    children: [
-      {
-        path: 'test1',
-        children: [
-          { path: 'demo1' },
-          { path: 'demo2', redirect: true }
-        ]
-      },
-      { path: 'test2' }
-    ]
+    children: subRoute.userNavSubRoute
   },
   {
     title: '管理员',

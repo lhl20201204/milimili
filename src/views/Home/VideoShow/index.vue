@@ -1,17 +1,20 @@
 <template>
-   <div class="video-list">
-     <video-list-item v-for="item in videoList" :item="item" :key="item.videoId"></video-list-item>
-     <button class="refresh"
+  <div class="video-list">
+    <video-list-item v-for="item in videoList"
+                     :item="item"
+                     :key="item.videoId"></video-list-item>
+    <button class="refresh"
             @click="loadingVideoList">
-      <Image :staticPath="staticPath" classes="refresh-img"/>
-       换一换
+      <Image :staticPath="staticPath"
+             classes="refresh-img" />
+      换一换
     </button>
-   </div>
+  </div>
 </template>
 
 <script>
 import { defineComponent, onBeforeMount, reactive } from 'vue'
-import VideoListItem from './VideoListItem'
+import VideoListItem from '@/components/VideoListItem'
 import s from '@/service/Home'
 import config from '@/config'
 import Image from '@/components/Image'

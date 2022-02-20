@@ -11,6 +11,7 @@ export function useMiddleWare (proxyObject, middleWares, unProxyAttr, ctx) {
     const originMethod = proxyObject[attr]
     const retMethod = middleWares.reduce((m, v) => v(m), originMethod)
     retMethod.toString = () => originMethod
+    retMethod.functionName = attr
     Object.defineProperty(proxyObject, attr, {
       get () {
         return retMethod

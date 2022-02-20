@@ -1,8 +1,15 @@
 <template>
-  <div class="videoPage">
+  <NotAccess v-if="unHaveAttr"
+             text="路由参数缺少，无法访问" />
+  <div class="videoPage"
+       v-else-if="video.auditing==videoHadAuditedStatus">
     <Left />
     <Right />
   </div>
+  <NotAccess v-else-if="video.auditing==videoAuditingStatus"
+             text="视频正在审核中" />
+  <NotAccess v-else-if="video.auditing==videoNeedEdit"
+             text="视频已退回等待重新修改提交审核" />
 </template>
 
 <script>
@@ -16,11 +23,13 @@ import { loadById } from '@/service'
 import config from '@/config'
 import { firstToUpperCase } from '@/utils'
 import { message } from 'ant-design-vue'
+import NotAccess from '@/components/NotAccess'
 export default defineComponent({
   name: 'Video',
   components: {
     Right,
-    Left
+    Left,
+    NotAccess
   },
   sockets: {
     insertBarrage (data) {
@@ -46,10 +55,8 @@ export default defineComponent({
   setup () {
     const router = useRouter()
     const store = useStore()
-    let video = JSON.parse(JSON.stringify(router.currentRoute.value.query))
-    video = {
-      ...video
-    }
+    const video = JSON.parse(JSON.stringify(router.currentRoute.value.query))
+    const unHaveAttr = config.videoDetailRouteAttrSubRoute.some(v => !Reflect.has(video, v))
     const instance = getCurrentInstance()
     instance.appContext.config.globalProperties.$socket.emit('videoLogin', {
       videoId: video.videoId,
@@ -78,7 +85,12 @@ export default defineComponent({
     })
 
     const subscribe = reactive({
-      v: [video]
+      v: [{
+        ...video,
+        avatar: config.avatarLoading,
+        account: config.accountLoading,
+        introduction: config.introductionLoading
+      }]
     })
 
     const isShowBarrage = ref(true)
@@ -175,7 +187,11 @@ export default defineComponent({
             }
           },
           method: s.getSubscribeById,
-          attrs: ['userId'],
+          getParams (r) {
+            return {
+              upId: r.userId
+            }
+          },
           cb: (data) => ({
             subscribe: data,
             subscribeHadLoad: true
@@ -252,7 +268,7 @@ export default defineComponent({
         s.getCommentById,
         {
           videoId: video.videoId,
-          auditing: 0
+          auditing: config.commentHadAuditedStatus
         },
         [
           {
@@ -286,7 +302,7 @@ export default defineComponent({
       )
     }
 
-    refresh()
+    !unHaveAttr && refresh()
     provide('subscribe', subscribe)
     provide('refresh', refresh)
     provide('isWatching', isWatching)
@@ -303,9 +319,14 @@ export default defineComponent({
     provide('changeCurrentTime', changeCurrentTime)
 
     return {
+      unHaveAttr,
       isWatching,
       comment,
-      barrage
+      barrage,
+      video,
+      videoHadAuditedStatus: config.videoHadAuditedStatus,
+      videoAuditingStatus: config.videoAuditingStatus,
+      videoNeedEdit: config.videoNeedEdit
     }
   }
 })

@@ -31,7 +31,11 @@ import { useStore } from 'vuex'
 import { message } from 'ant-design-vue'
 import Tooltip from '@/components/Tooltip'
 export default defineComponent({
-  components: { DynamicAvatar, Image, Tooltip },
+  components: {
+    DynamicAvatar,
+    Image,
+    Tooltip
+  },
   setup () {
     const { v: subscribe } = inject('subscribe')
     const store = useStore()

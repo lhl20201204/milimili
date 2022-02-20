@@ -49,13 +49,16 @@ export default defineComponent({
       }
       await uploadService.updateVideo({
         videoId: props.item.videoId,
-        auditing: 0
+        auditing: config.videoHadAuditedStatus
       })
       await s.insertNotice({
         time: config.time(),
         userId: store.state.userId,
         noticedUserId: props.item.userId,
-        content: successReason.value || '您的稿件【【' + props.item.videoTitle + '】】(mv' + props.item.videoId + ')通过了审核'
+        type: 'video',
+        typeId: props.item.videoId,
+        content: '通过了审核',
+        status: config.auditStatusSuccess
       })
       props.item.setHandleItem(true)
       successVisible.value = false
@@ -81,7 +84,10 @@ export default defineComponent({
         time: config.time(),
         userId: store.state.userId,
         noticedUserId: props.item.userId,
-        content: '您的稿件【【' + props.item.videoTitle + '】】(mv' + props.item.videoId + ')未能通过审核，原因：' + failReason.value
+        type: 'video',
+        typeId: props.item.videoId,
+        content: failReason.value,
+        status: config.auditStatusBeReturned
       })
 
       failVisible.value = false

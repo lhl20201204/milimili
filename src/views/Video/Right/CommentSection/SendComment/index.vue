@@ -34,7 +34,7 @@ export default defineComponent({
     const instance = getCurrentInstance()
     async function sendComment () {
       const params = {
-        auditing: 0,
+        auditing: config.commentHadAuditedStatus,
         videoId: props.comment ? props.comment.videoId : video[0].videoId,
         userId: store.state.userId,
         sendTime: config.time(),

@@ -2,8 +2,8 @@
   <div class="onlineUser-list-item">
     <div>
       <span>
-        <Avatar v-if="item"
-                :src="item ? item.avatar: ''"
+        <Avatar v-if="item&&item.avatar"
+                :src="item.avatar"
                 :size="30" />
         <span v-show="!item">用户头像</span>
       </span>
