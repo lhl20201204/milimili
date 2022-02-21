@@ -13,7 +13,7 @@ export default defineComponent({
   },
   setup () {
     const { v: comment } = inject('comment')
-    console.log(comment)
+
     return {
       comment,
       AuditCommentItem

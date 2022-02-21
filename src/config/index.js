@@ -25,6 +25,14 @@ export default {
   defaultIntroduction: '此用户没有个性签名啊啊啊',
   videoDefaultIntroduction: '未经原作者允许禁止转载',
   defaultUserRoutePath: '/user/homePage/likes',
+  defaultVideoConfig: {
+    videoTitle: '!视频已经不在',
+    isNull: true
+  },
+  defaultCommentConfig: {
+    content: '!评论已经不存在',
+    isNull: true
+  },
   videoHadAuditedStatus: 0,
   commentHadAuditedStatus: 0,
   videoAuditingStatus: -1,

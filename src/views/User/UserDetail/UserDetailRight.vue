@@ -10,6 +10,7 @@
     </div>
     <div>
       <a-space>
+        <button >编辑个人信息</button>
         <SubscribeList :key="userId"
                        :list="fans"
                        type="fans">
@@ -27,6 +28,15 @@
       <br />
       <br />
       <a-space>
+        <a-popconfirm
+    title="你确定要退出登录?"
+    ok-text="Yes"
+    cancel-text="No"
+    @confirm="logout"
+    @cancel="()=>{}"
+  >
+    <button>退出登录</button>
+  </a-popconfirm>
         <button :class="{'had-sub':fans && hadSub(fans,$store.state.userId )>-1}"
                 @click="handleSub">{{ (fans && hadSub(fans,$store.state.userId )>-1 ? '取消关注 ': '+ 关注 ') + (fans.length)  }}</button>
         <button @click="refresh(true)">刷新</button>
@@ -44,6 +54,7 @@ import { useStore } from 'vuex'
 import videoService from '@/service/Video'
 import { message } from 'ant-design-vue'
 import SendMessage from '@/components/SendMessage'
+import { useRouter } from 'vue-router'
 export default defineComponent({
   props: ['item'],
   components: {
@@ -52,6 +63,8 @@ export default defineComponent({
     SendMessage
   },
   setup () {
+    const router = useRouter()
+    const clearNavRouter = inject('clearNavRouter')
     const { v: subscribes } = inject('subscribes')
     const { v: fans } = inject('fans')
     const { v: user } = inject('user')
@@ -104,7 +117,19 @@ export default defineComponent({
       alert(r)
     }
 
+    const logout = () => {
+      sessionStorage.setItem('rememberPassword', '')
+      sessionStorage.setItem('currentUser', '')
+      sessionStorage.setItem('currentUserId', '')
+      sessionStorage.setItem('currentUserAvatarSrc', '')
+      sessionStorage.setItem('currentUserIntroduction', '')
+      sessionStorage.setItem('currentUserTime', '')
+      clearNavRouter()
+      router.push('/login')
+    }
+
     return {
+      logout,
       defaultIntroduction: config.defaultIntroduction,
       subscribes,
       fans,
@@ -121,7 +146,7 @@ export default defineComponent({
 .user-detail-right {
   display: flex;
   > div:last-child {
-    width: 300px;
+    width: 450px;
     .tooltip {
       overflow: hidden;
       text-overflow: ellipsis;

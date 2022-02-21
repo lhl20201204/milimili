@@ -50,6 +50,14 @@ export default defineComponent({
         videoAuditingStatus: config.videoAuditingStatus
       }, [
         {
+          lastResult (data) {
+            // 什么都不做相当于预处理
+            return data.filter(r => r.userId !== store.state.userId)
+          },
+          method: async () => ({ data: {} }),
+          attrs: []
+        },
+        {
           lastResult: (res) => {
             if (!loadingProcessNotUpdate) {
               const ret = (Array.isArray(res) ? res : [res]).map(r => ({
@@ -81,14 +89,17 @@ export default defineComponent({
             }
           })
         }
-      ], {
-        filter (data) {
-          return data.filter(r => r.userId !== store.state.userId)
-        }
-      })
+      ])
       loadById(complaint, s.getAuditingComplaintList, {
         complaintAuditingStatus: config.complaintAuditingStatus
       }, [
+        {
+          lastResult (data) {
+            return data.filter(r => r.targetUserId !== store.state.userId)
+          },
+          method: async () => ({ data: {} }),
+          attrs: []
+        },
         {
           lastResult: (res) => {
             if (!loadingProcessNotUpdate) {
@@ -141,9 +152,9 @@ export default defineComponent({
             return res.type === 'video' ? { videoId: res.typeId, auditing: config.videoHadAuditedStatus } : { commentId: res.typeId }
           },
           cb: (data, res) => res.type === 'video' ? ({
-            ...data[0]
+            ...(data[0] || config.defaultVideoConfig)
           }) : ({
-            ...data[0]
+            ...(data[0] || config.defaultCommentConfig)
           })
         },
         {
@@ -160,11 +171,7 @@ export default defineComponent({
             tagHadLoad: true
           })
         }
-      ], {
-        filter (data) {
-          return data.filter(r => r.targetUserId !== store.state.userId)
-        }
-      })
+      ])
 
       const commentArr = [
         {
@@ -236,6 +243,14 @@ export default defineComponent({
       loadById(comment, s.getAuditingCommentList, {
         auditing: config.commentAuditingStatus
       }, [
+        {
+          lastResult (data) {
+            // 什么都不做相当于预处理
+            return data.filter(r => r.userId !== store.state.userId)
+          },
+          method: async () => ({ data: {} }),
+          attrs: []
+        },
         [
           commentArr,
           {
@@ -247,7 +262,7 @@ export default defineComponent({
             attrs: ['videoId'],
             cb (res) {
               return {
-                video: res[0],
+                video: res[0] || config.defaultVideoConfig,
                 videoHadLoad: true
               }
             }
@@ -266,7 +281,7 @@ export default defineComponent({
             },
             cb (r) {
               return {
-                replyComment: r[0],
+                replyComment: r[0] || config.defaultCommentConfig,
                 setHandleItem: function (x) {
                   this.hadHandleItem = x
                 }
@@ -274,11 +289,7 @@ export default defineComponent({
             }
           }
         ]
-      ], {
-        filter (data) {
-          return data.filter(r => r.userId !== store.state.userId)
-        }
-      })
+      ])
     }
     refresh()
     provide('refresh', refresh)

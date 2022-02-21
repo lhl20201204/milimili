@@ -15,7 +15,9 @@
         }">其他页面</a-menu-item>
       </a-menu>
       <!-- 处理导航栏折叠问题 -->
-      <a-menu v-show="time >= 1 || (time === 0 && $route.path !== '/login')"
+      <a-menu :key="menu"
+              v-show="time >= 1 || (time === 0 && $route.path !== '/login')"
+              :inlineCollapsed="false"
               v-model:selectedKeys="selectedKeys"
               theme="dark"
               mode="horizontal"
@@ -53,7 +55,7 @@
   </a-layout>
 </template>
 <script>
-import { defineComponent, reactive, ref, watch, getCurrentInstance, nextTick } from 'vue'
+import { defineComponent, reactive, ref, watch, getCurrentInstance, nextTick, provide } from 'vue'
 
 import moment from 'moment'
 import config from '@/config'
@@ -71,12 +73,23 @@ export default defineComponent({
     const instance = getCurrentInstance()
     const { routes } = config
     const navRouter = reactive([])
+    const time = ref(0)
+    const menu = ref(1)
+    let firstRender = false
+    const clearNavRouter = () => {
+      navRouter.splice(0, navRouter.length)
+      time.value = -1
+      firstRender = false
+      menu.value = menu.value + 1
+    }
+    provide('clearNavRouter', clearNavRouter)
     const route = useRoute()
     const store = useStore()
     const pathRouter = navRouter.map(({ path }) => path)
     const state = reactive({
       activateIndex: pathRouter.findIndex(v => route.path.slice(1).startsWith(v))
     })
+    store.commit('setCannotVisitPage', [])
     const hoverComp = (instance) => {
       navRouter.filter(v => v.type === 'hover').forEach(element => {
         const node = instance.refs[element.path][0].$el.nextElementSibling
@@ -95,8 +108,7 @@ export default defineComponent({
       store.commit('setCannotVisitPage', cannotVisitor.map(({ path }) => path))
     }
     setUnVisitPage()
-    const time = ref(0)
-    let firstRender = false
+
     watch(
       () => route.path,
       (path) => { // 初始化路由索引
@@ -138,6 +150,7 @@ export default defineComponent({
     }
 
     return {
+      menu,
       time,
       state,
       goRoute,

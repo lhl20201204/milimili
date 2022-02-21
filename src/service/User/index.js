@@ -11,6 +11,9 @@ const ret = {
   },
   updateUser (params) {
     return post('/api/user/updateUser', params)
+  },
+  getReply (params) {
+    return post('/api/comment/getReply', params)
   }
 }
 export default ret

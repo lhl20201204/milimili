@@ -94,8 +94,8 @@ export default defineComponent({
       storage.setItem('currentUserAvatarSrc', data.avatar || config.userDefaultImagePath)
       storage.setItem('authority', data.authority || '')
       storage.setItem('currentUserIntroduction', data.introduction || config.defaultIntroduction)
-      storage.setItem('currentUserTime', data.time)
-      onLogin(username, data.userId, storage.getItem('currentUserAvatarSrc'), storage.getItem('currentUserIntroduction'), data.time)
+      storage.setItem('currentUserTime', data.userTime)
+      onLogin(username, data.userId, storage.getItem('currentUserAvatarSrc'), storage.getItem('currentUserIntroduction'), data.userTime)
     }
 
     const onFinishFailed = errorInfo => {

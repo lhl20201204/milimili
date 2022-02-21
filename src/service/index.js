@@ -17,7 +17,7 @@ export function updateTime (attr) { // 如果出问题去看 user表的time字�
     })
     const { data } = await user.updateUser({
       userId: store.state.userId,
-      time: timeStr
+      userTime: timeStr
     })
     if (data.affectedRows !== 1) {
       throw new Error()

@@ -18,6 +18,10 @@ export default createStore({
     isInChatRoom: false
   },
   mutations: {
+    resetLogin (state, payload) {
+      state.hadRenderRoute = false
+      state.cannotVisitPage = []
+    },
     setCannotVisitPage (state, payload) {
       if (Array.isArray) {
         state.cannotVisitPage.splice(0, state.cannotVisitPage.length)

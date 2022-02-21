@@ -15,7 +15,8 @@
         key:v[attr+'Id']}))"
                      :columns="columns">
             </a-table>
-            <a-pagination v-model:current="current"
+            <a-pagination :current="current"
+                          @change="change"
                           :pageSize="1"
                           :total="video.length" />
           </div>
@@ -27,30 +28,31 @@
 </template>
 
 <script>
-import { defineComponent, inject, ref, watch } from 'vue'
+import { defineComponent, inject, watch } from 'vue'
 import List from '@/components/List'
 import VideoListItem from '@/components/VideoListItem'
 import DynamicAvatar from '@/components/DynamicAvatar'
 import TooltipItem from '@/components/TooltipItem'
 import config from '@/config'
 export default defineComponent({
-  props: ['attr'],
+  props: ['attr', 'current', 'changeCurrent'],
   components: {
     List,
     VideoListItem
   },
   setup (props) {
     const { v: video } = inject('video')
-    const current = ref(1)
-
     watch(() => video.length, () => {
-      if (current.value > video.length) {
-        current.value = 1
+      if (props.current.value > video.length) {
+        props.changeCurrent(1)
       }
     })
+    const change = (x) => {
+      props.changeCurrent(x)
+    }
     return {
+      change,
       video,
-      current,
       columns: [
         {
           title: '用户',

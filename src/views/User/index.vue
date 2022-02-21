@@ -82,6 +82,10 @@ export default defineComponent({
     const loveComment = reactive({
       v: []
     })
+
+    const reply = reactive({
+      v: []
+    })
     let unWatch = null
 
     // const getVideoCanRerender = (firstChange) => firstChange || route.path.startsWith('/user/uploadPage') || route.path.startsWith('/user/homePage')
@@ -137,7 +141,7 @@ export default defineComponent({
           attrs: ['videoId'],
           cb (data) {
             return {
-              ...data[0]
+              ...(data[0] || config.defaultVideoConfig)
             }
           }
         }
@@ -273,7 +277,7 @@ export default defineComponent({
             attrs: ['videoId'],
             cb (res, origin) {
               return {
-                ...res[0],
+                ...(res[0] || config.defaultVideoConfig),
                 userHandleType: v,
                 userHandleTime: origin.time
               }
@@ -393,7 +397,7 @@ export default defineComponent({
             attrs: ['videoId'],
             cb (res) {
               return {
-                video: res[0],
+                video: res[0] || config.defaultVideoConfig,
                 videoHadLoad: true
               }
             }
@@ -412,7 +416,7 @@ export default defineComponent({
             },
             cb (r) {
               return {
-                replyComment: r[0]
+                replyComment: r[0] || config.defaultCommentConfig
               }
             }
           }
@@ -441,9 +445,9 @@ export default defineComponent({
             return res.type === 'video' ? { videoId: res.typeId } : { commentId: res.typeId }
           },
           cb: (data, res) => res.type === 'video' ? ({
-            video: data[0]
+            video: data[0] || config.defaultVideoConfig
           }) : ({
-            comment: data[0]
+            comment: data[0] || config.defaultCommentConfig
           })
         }
       ], {
@@ -457,7 +461,7 @@ export default defineComponent({
           method: videoService.getLoveById,
           attrs: ['commentId'],
           cb: (data) => ({
-            love: data,
+            love: data.filter(u => u.lovePerson !== userId.value),
             loveHadLoad: true
           })
         },
@@ -504,12 +508,49 @@ export default defineComponent({
           attrs: ['videoId'],
           cb (res) {
             return {
-              video: res[0],
+              video: res[0] || config.defaultVideoConfig,
               videoHadLoad: true
             }
           }
         },
         love
+      ])
+      loadById(reply, s.getReply, {
+        replyUserId: userId.value,
+        auditing: config.commentHadAuditedStatus
+      }, [
+        {
+          lastResult (data) {
+            // 什么都不做相当于预处理
+            return data.filter(u => u.userId !== userId.value).sort((a, b) => new Date(b.sendTime) - new Date(a.sendTime))
+          },
+          method: async () => ({ data: {} }),
+          attrs: []
+        },
+        [{
+          method: adminService.getVideoDetail,
+          cache: {
+            mapName: 'getVideoDetail',
+            key: ['videoId']
+          },
+          attrs: ['videoId'],
+          cb (data) {
+            return {
+              video: data[0] || config.defaultVideoConfig,
+              videoHadLoad: true
+            }
+          }
+        },
+        {
+          method: videoService.getUserById,
+          attrs: ['userId'],
+          cb (data) {
+            return {
+              user: data,
+              userHadload: true
+            }
+          }
+        }]
       ])
     }
     let oldUserId = userId.value
@@ -535,6 +576,7 @@ export default defineComponent({
     provide('message', message)
     provide('notice', notice)
     provide('loveComment', loveComment)
+    provide('reply', reply)
     return {
       userNavSubRoute,
       userId

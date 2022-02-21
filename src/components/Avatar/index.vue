@@ -2,6 +2,7 @@
   <Image :src="src"
          :click="click||(()=>null)"
          :style="{
+  cursor: 'pointer',
   width: `${width}px`,
   height: `${height}px`,
   'border-radius': radius?`${radius}px`: '50%',

@@ -17,6 +17,7 @@ import Image from '@/components/Image'
 import config from '@/config'
 import { useRouter } from 'vue-router'
 import _ from 'lodash'
+import { message } from 'ant-design-vue'
 export default defineComponent({
   props: ['item', 'isAuto'],
   components: {
@@ -25,6 +26,9 @@ export default defineComponent({
   setup (props) {
     const router = useRouter()
     function goVideoDetail () {
+      if (props.item.isNull) {
+        return message.error('视频已不存在')
+      }
       router.push({
         path: '/video',
         query: _.pick(props.item, config.videoDetailRouteAttrSubRoute)
@@ -47,6 +51,7 @@ export default defineComponent({
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
   position: relative;
 }
 
