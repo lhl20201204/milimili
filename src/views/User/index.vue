@@ -78,6 +78,10 @@ export default defineComponent({
     const notice = reactive({
       v: []
     })
+
+    const loveComment = reactive({
+      v: []
+    })
     let unWatch = null
 
     // const getVideoCanRerender = (firstChange) => firstChange || route.path.startsWith('/user/uploadPage') || route.path.startsWith('/user/homePage')
@@ -447,6 +451,66 @@ export default defineComponent({
           return data.sort((a, b) => new Date(b.time) - new Date(a.time))
         }
       })
+
+      const love = [
+        {
+          method: videoService.getLoveById,
+          attrs: ['commentId'],
+          cb: (data) => ({
+            love: data,
+            loveHadLoad: true
+          })
+        },
+        {
+          getProxyAttr () {
+            return '0.love'
+          },
+          method: videoService.getUserById,
+          getParams (r) {
+            return {
+              userId: r.lovePerson
+            }
+          },
+          cb (data) {
+            return {
+              user: data,
+              userHadload: true
+            }
+          }
+        }
+      ]
+      love.serial = true
+
+      loadById(loveComment, videoService.getCommentById, {
+        userId: userId.value,
+        auditing: config.commentHadAuditedStatus
+      }, [
+        {
+          lastResult: (res) => {
+            if (!loadingProcessNotUpdate) {
+              loveComment.v.splice(0, loveComment.v.length)
+              loveComment.v.splice(0, 0, ...(Array.isArray(res) ? res : [res]).map(r => ({
+                ...r,
+                video: {},
+                love: []
+              })))
+            }
+          },
+          cache: {
+            mapName: 'getVideoDetail',
+            key: ['videoId']
+          },
+          method: adminService.getVideoDetail,
+          attrs: ['videoId'],
+          cb (res) {
+            return {
+              video: res[0],
+              videoHadLoad: true
+            }
+          }
+        },
+        love
+      ])
     }
     let oldUserId = userId.value
     unWatch = watch(() => router.currentRoute.value.query, (x) => {
@@ -470,6 +534,7 @@ export default defineComponent({
     provide('editComment', editComment)
     provide('message', message)
     provide('notice', notice)
+    provide('loveComment', loveComment)
     return {
       userNavSubRoute,
       userId

@@ -2,6 +2,32 @@ import axios from 'axios'
 import qs from 'qs'
 import { reactive } from 'vue'
 import config from '@/config'
+import store from '@/store'
+import user from '@/service/User'
+export function updateTime (attr) { // 如果出问题去看 user表的time字段值是否是json值
+  const time = JSON.parse(store.state.userTime)
+  const updateTime = async () => {
+    const timeStr = JSON.stringify({
+      ...time,
+      ...(() => {
+        const obj = {}
+        obj[attr] = config.time()
+        return obj
+      })()
+    })
+    const { data } = await user.updateUser({
+      userId: store.state.userId,
+      time: timeStr
+    })
+    if (data.affectedRows !== 1) {
+      throw new Error()
+    }
+    store.commit('changeUserTime', timeStr)
+    sessionStorage.setItem('currentUserTime', timeStr)
+  }
+  updateTime()
+  return time[attr]
+}
 
 export function get (url, params, config) {
   return axios.get(url, params, config).catch(e => e)
@@ -236,6 +262,7 @@ export async function loadById (res, method, params, arr, options) {
       }
     }
     res.v.splice(0, 0, ...data)
+    res.v.hadLoad = true
     if (Array.isArray(data)) {
       res.v.datahadLoadedButResultNull = !data.length
     }

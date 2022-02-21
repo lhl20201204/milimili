@@ -14,7 +14,7 @@
           <template #title>
             <a-badge title="new Message"
                      :offset="[10,0]"
-                     :dot="new Date(item.time)>=new Date(message)">
+                     :dot="new Date(item.time)>=new Date(lastTime)">
               <a-space><span>【系统通知】</span> <span>{{ item.time }}</span></a-space>
             </a-badge>
           </template>
@@ -32,33 +32,14 @@
 import { defineComponent, inject } from 'vue'
 import VideoListItem from '@/components/VideoListItem'
 import config from '@/config'
-import { useStore } from 'vuex'
-import s from '@/service/User'
+import { updateTime } from '@/service'
 export default defineComponent({
   components: {
     VideoListItem
   },
   setup () {
     const { v: notice } = inject('notice')
-    const store = useStore()
-    const time = JSON.parse(store.state.userTime)
-
-    const updateTime = async () => {
-      const timeStr = JSON.stringify({
-        ...time,
-        message: config.time()
-      })
-      const { data } = await s.updateUser({
-        userId: store.state.userId,
-        time: timeStr
-      })
-      if (data.affectedRows !== 1) {
-        throw new Error()
-      }
-      store.commit('changeUserTime', timeStr)
-      sessionStorage.setItem('currentUserTime', timeStr)
-    }
-    updateTime()
+    const lastTime = updateTime('notice')
     const pagination = {
       pageSize: 4
     }
@@ -92,7 +73,7 @@ export default defineComponent({
       pagination,
       handles,
       auditStatusSuccess,
-      message: time.message
+      lastTime
     }
   }
 })
