@@ -86,6 +86,7 @@ export default defineComponent({
     const reply = reactive({
       v: []
     })
+
     let unWatch = null
 
     // const getVideoCanRerender = (firstChange) => firstChange || route.path.startsWith('/user/uploadPage') || route.path.startsWith('/user/homePage')
@@ -423,8 +424,40 @@ export default defineComponent({
         ]
       ])
 
-      loadById(message, videoService.getUserById, {
+      loadById(message, s.getMessageById, {
         userId: userId.value
+      }, [
+        {
+          lastResult (res) {
+            if (!loadingProcessNotUpdate) {
+              const ret = config.messageGroup((Array.isArray(res) ? res : [res]), userId.value).map(r => ({
+                ...r,
+                user: {
+                  avatar: r.user ? r.user.avatar : config.avatarLoading,
+                  account: r.user ? r.user.account : config.accountLoading,
+                  introduction: r.user ? r.user.introduction : config.introductionLoading
+                }
+              }))
+              message.v.splice(0, message.v.length)
+              message.v.splice(0, 0, ...ret)
+              return ret
+            } else {
+              return config.messageGroup((Array.isArray(res) ? res : [res]), userId.value)
+            }
+          },
+          method: videoService.getUserById,
+          attrs: ['userId'],
+          cb (data) {
+            return {
+              user: data,
+              userHadload: true
+            }
+          }
+        }
+      ], {
+        filter (data) {
+          return data
+        }
       })
 
       loadById(notice, s.getNoticeByNoticedUserId, {

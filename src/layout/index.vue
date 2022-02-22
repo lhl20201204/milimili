@@ -15,13 +15,15 @@
         }">其他页面</a-menu-item>
       </a-menu>
       <!-- 处理导航栏折叠问题 -->
-      <a-menu :key="menu"
+      <a-menu
               v-show="time >= 1 || (time === 0 && $route.path !== '/login')"
-              :inlineCollapsed="false"
               v-model:selectedKeys="selectedKeys"
               theme="dark"
+              class="main"
               mode="horizontal"
-              :style="{ lineHeight:navHeaderHeight}">
+              :style="{
+                lineHeight:navHeaderHeight,
+                minWidth: 104*navRouter.length+'px' }">
         <a-menu-item class="my-a-menu-item"
                      v-for="(item,index) in navRouter"
                      :key="item.path"
@@ -74,13 +76,12 @@ export default defineComponent({
     const { routes } = config
     const navRouter = reactive([])
     const time = ref(0)
-    const menu = ref(1)
+
     let firstRender = false
-    const clearNavRouter = () => {
+    function clearNavRouter () {
       navRouter.splice(0, navRouter.length)
       time.value = -1
       firstRender = false
-      menu.value = menu.value + 1
     }
     provide('clearNavRouter', clearNavRouter)
     const route = useRoute()
@@ -150,7 +151,6 @@ export default defineComponent({
     }
 
     return {
-      menu,
       time,
       state,
       goRoute,

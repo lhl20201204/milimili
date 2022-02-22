@@ -34,5 +34,23 @@ export default {
   },
   userHadCache (obj, key) { // 分开写方便以后该逻辑
     return obj && obj[key] instanceof Promise
+  },
+  messageGroup (data, userId) {
+    const ret = {}
+    data.forEach(m => {
+      const type = m.userId === userId ? m.receivedUserId : m.userId
+      if (!Reflect.has(ret, type)) {
+        ret[type] = []
+      }
+      ret[type].push(m)
+    })
+    const ret2 = []
+    Reflect.ownKeys(ret).forEach(u => {
+      ret2.push({
+        userId: u,
+        messageGroup: ret[u]
+      })
+    })
+    return ret2
   }
 }

@@ -10,7 +10,7 @@
     </div>
     <div>
       <a-space>
-        <button >编辑个人信息</button>
+
         <SubscribeList :key="userId"
                        :list="fans"
                        type="fans">
@@ -23,7 +23,10 @@
         </SubscribeList>
         <SendMessage v-if="user[0].userId!==$store.state.userId"
                      :key="user[0].userId+$route.path"
+                     :cache="getCache"
                      :targetUser="user[0]" />
+        <EditUser v-else
+                     :key="user[0].userId+$route.path"/>
       </a-space>
       <br />
       <br />
@@ -46,26 +49,28 @@
 </template>
 
 <script>
-import { defineComponent, inject } from 'vue'
+import { computed, defineComponent, inject } from 'vue'
 import Tooltip from '@/components/Tooltip'
 import config from '@/config'
 import SubscribeList from './SubscribeList'
 import { useStore } from 'vuex'
 import videoService from '@/service/Video'
-import { message } from 'ant-design-vue'
 import SendMessage from '@/components/SendMessage'
+import EditUser from '@/components/EditUser'
 import { useRouter } from 'vue-router'
 export default defineComponent({
   props: ['item'],
   components: {
     Tooltip,
     SubscribeList,
-    SendMessage
+    SendMessage,
+    EditUser
   },
   setup () {
     const router = useRouter()
     const clearNavRouter = inject('clearNavRouter')
     const { v: subscribes } = inject('subscribes')
+    const { v: message } = inject('message')
     const { v: fans } = inject('fans')
     const { v: user } = inject('user')
     const userId = inject('userId')
@@ -124,11 +129,28 @@ export default defineComponent({
       sessionStorage.setItem('currentUserAvatarSrc', '')
       sessionStorage.setItem('currentUserIntroduction', '')
       sessionStorage.setItem('currentUserTime', '')
+      store.commit('changeUserAvatarSrc', '')
+      store.commit('changeUserStatus', '')
       clearNavRouter()
       router.push('/login')
     }
 
+    const index = computed(() => message.findIndex(v => v.userId === store.state.userId))
+    const getCache = computed(() => {
+      return index.value > -1 ? message[index.value].messageGroup.map(v => {
+        return {
+          ...v,
+          user: v.userId === store.state.userId ? {
+            userId: store.state.userId,
+            account: store.state.userName,
+            introduction: store.state.userIntroduction,
+            avatar: store.state.userAvatarSrc
+          } : user[0]
+        }
+      }) : []
+    })
     return {
+      getCache,
       logout,
       defaultIntroduction: config.defaultIntroduction,
       subscribes,

@@ -1,17 +1,15 @@
 <template>
-  <div>
+  <div :key="cache">
     <a-button type="primary"
-              @click="showModal">发消息</a-button>
+              @click="showModal">{{text || '发消息'}}</a-button>
     <a-modal :visible="visible"
              title="私信"
              :footer="null"
              @cancel="handleOk"
              @ok="handleOk">
       <ChatRoom :targetUser="targetUser"
+                :cache="cache"
                 :isOnline="onlinesUsers.v.length > 1"> </ChatRoom>
-      <template #title>
-        232547568768
-      </template>
     </a-modal>
   </div>
 </template>
@@ -26,7 +24,7 @@ export default defineComponent({
     ChatRoom
   },
   name: 'SendMessage',
-  props: ['targetUser'],
+  props: ['targetUser', 'cache', 'text'],
   sockets: {
     messageLogin ({ onlineUsers }) {
       this.onlinesUsers.v.splice(0, this.onlinesUsers.v.length)

@@ -1,5 +1,4 @@
 <template>
-  <a-space>
     <a-card>
       <List :list="list"
             loadingTip="loading..."
@@ -23,12 +22,12 @@
         </template>
       </List>
     </a-card>
-  </a-space>
 </template>
 
 <script>
 import { defineComponent, ref, watch } from 'vue'
 import List from '@/components/List'
+import config from '@/config'
 export default defineComponent({
   props: ['list', 'comp'],
   components: {
@@ -51,6 +50,10 @@ export default defineComponent({
         {
           title: '内容',
           dataIndex: 'content'
+        },
+        {
+          title: '类型',
+          customRender: ({ record }) => (<span>{config.auditStatusMeans[0][record.status]} </span>) // 这里暂定
         }
       ]
     }

@@ -10,8 +10,7 @@
            ref="message">
         <ChatMessageItem v-for="item in messageList.v"
                          :key="item.messageId"
-                         :user="item.user"
-                         :message="item.message"
+                         :item="item"
                          :alignLeft="item.user.userId!=$store.state.userId" />
       </div>
     </a-card>
@@ -27,11 +26,13 @@
 </template>
 
 <script>
-import { defineComponent, getCurrentInstance, nextTick, reactive, ref, watch } from 'vue'
+import { defineComponent, getCurrentInstance, nextTick, onMounted, reactive, ref, watch } from 'vue'
 import DynamicAvatar from '@/components/DynamicAvatar'
 import ChatMessageItem from './ChatMessageItem'
 import { useStore } from 'vuex'
 import config from '@/config'
+import s from '@/service/User'
+import { message } from 'ant-design-vue'
 export default defineComponent({
   components: {
     DynamicAvatar,
@@ -42,13 +43,13 @@ export default defineComponent({
       this.messageList.v.push(data)
     }
   },
-  props: ['targetUser', 'isOnline'],
-  setup () {
+  props: ['targetUser', 'isOnline', 'cache'],
+  setup (props) {
     const content = ref('')
     const store = useStore()
     const instance = getCurrentInstance()
     const messageList = reactive({
-      v: []
+      v: [...props.cache]
     })
 
     watch(() => messageList.v.length, () => {
@@ -60,9 +61,24 @@ export default defineComponent({
       }
     })
 
-    let id = 0
-    const sendMessage = () => {
-      console.log(content.value)
+    onMounted(() => {
+      nextTick(() => {
+        const dom = (instance.ctx.$refs.message)
+        dom.scrollTop = dom.scrollHeight
+      })
+    })
+
+    const sendMessage = async () => {
+      const obj = {
+        userId: store.state.userId,
+        receivedUserId: props.targetUser.userId,
+        time: config.time(),
+        content: content.value
+      }
+      const { data } = await s.insertMessage(obj)
+      if (data.affectedRows !== 1) {
+        throw new Error('插入错误')
+      }
       instance.appContext.config.globalProperties.$socket.emit('message', {
         user: {
           userId: store.state.userId,
@@ -70,12 +86,11 @@ export default defineComponent({
           introduction: store.state.userIntroduction,
           avatar: store.state.userAvatarSrc
         },
-        message: {
-          content: content.value,
-          time: config.time()
-        },
-        messageId: id++
+        ...obj,
+        messageId: data.insertId
       })
+      content.value = ''
+      message.success('发送成功')
     }
     return {
       content,

@@ -62,7 +62,18 @@ export default defineComponent({
       height: ((config.navHeaderHeight.slice(0, -2)) * 1 + (config.layoutContentPadding.slice(0, -2)) * 2 + (config.layoutFooterHeight.slice(0, -2)) * 1) + 'px'
     })
     const onFinish = async values => {
-      const { data } = await s.getRegisterStatus(values)
+      const time = config.time()
+      const timeStr = {
+        message: time,
+        reply: time,
+        love: time,
+        notice: time
+      }
+      const { data } = await s.getRegisterStatus({
+        ...values,
+        avatar: config.defaultNewUserAvatar,
+        userTime: JSON.stringify(timeStr)
+      })
       if (!data) {
         message.error('注册失败')
       }

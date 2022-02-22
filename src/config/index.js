@@ -18,6 +18,7 @@ export default {
   layoutFooterHeight: '70px',
   layoutContentPadding: '24px',
   rootCommentId: '00000000000000000000',
+  defaultNewUserAvatar: 'user_default_avatar',
   videoIdPrefixZero: 20,
   accountLoading: 'defaultName',
   avatarLoading: 'hadNotLoaded',

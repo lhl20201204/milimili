@@ -63,9 +63,9 @@ export default defineComponent({
       lastTime,
       love,
       pagination: {
-        pageSize: 4,
-        accountLoading: config.accountLoading
-      }
+        pageSize: 4
+      },
+      accountLoading: config.accountLoading
     }
   }
 })
