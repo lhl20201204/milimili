@@ -138,8 +138,8 @@ export default defineComponent({
       background: transparent;
       border: none;
       box-shadow: none;
-      top: @padding;
-      left: @padding;
+      top: 0;
+      left: 0;
       > :deep(.ant-form-item) {
         .register {
            float: right;
