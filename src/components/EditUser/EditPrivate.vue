@@ -1,9 +1,7 @@
 <template>
   <div class="upload-page">
-    <a-card :style="{
-      width: '700px'
-  }">
-      <a-form :model="form"
+    <div class="card-body">
+       <a-form :model="form"
               :label-col="{ span: 8 }"
               :wrapper-col="{ span: 12 }"
               @finish="onFinish"
@@ -50,7 +48,7 @@
           </a-button>
         </a-form-item>
       </a-form>
-    </a-card>
+    </div>
   </div>
 
 </template>
@@ -146,17 +144,22 @@ export default defineComponent({
   display: flex;
   justify-content: center;
   align-items: center;
-  :deep(.ant-card-body) {
+  > .card-body {
+    width: 700px;
+    border: 1px solid rgba(0,0,0,0.1);
+    height: 400px;
     padding: @padding;
     //  定位写死是为了解决从视频详情页跳转到投稿页面的高度塌陷，排查找不出原因，待改进
     position: relative;
     > .ant-form {
+      width: 422px;
+      height: 352px;
       background: transparent;
       border: none;
       box-shadow: none;
       top: @padding;
       left: @padding;
-      > .ant-form-item {
+      > :deep(.ant-form-item) {
         &:last-child {
           display: flex;
           justify-content: center;

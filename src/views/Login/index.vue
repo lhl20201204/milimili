@@ -4,8 +4,8 @@
   minHeight: '276px',
   height: `calc(100vh - ${formStyle.height})`
   }">
-    <a-card style="width: 500px">
-      <a-form :model="formState"
+      <div class="card-body">
+        <a-form :model="formState"
               name="basic"
               :label-col="{ span: 8 }"
               :wrapper-col="{ span: 16 }"
@@ -39,7 +39,8 @@
                     :disabled="formState.username === '' || formState.password === ''">Submit</a-button>
         </a-form-item>
       </a-form>
-    </a-card>
+      </div>
+
   </div>
 </template>
 <script>
@@ -119,16 +120,42 @@ export default defineComponent({
 </script>
 
 <style lang="less" scoped>
+@padding: 24px;
 .loginPage {
   display: flex;
   justify-content: center;
   align-items: center;
-  .register {
-    float: right;
-    font-size: 8px;
-    color: #40a9ff;
-    &:hover {
-      color: #1890ff;
+  > .card-body {
+    width: 500px;
+    border: 1px solid rgba(0,0,0,0.1);
+    height: 250px;
+    padding: @padding;
+    //  定位写死是为了解决从视频详情页跳转到投稿页面的高度塌陷，排查找不出原因，待改进
+    position: relative;
+    > .ant-form {
+      width: 450px;
+      height: 200px;
+      background: transparent;
+      border: none;
+      box-shadow: none;
+      top: @padding;
+      left: @padding;
+      > :deep(.ant-form-item) {
+        .register {
+           float: right;
+           font-size: 8px;
+           color: #40a9ff;
+           &:hover {
+             color: #1890ff;
+           }
+           }
+
+        > .ant-form-item-label {
+          > label {
+            color: black;
+          }
+        }
+      }
     }
   }
 }
