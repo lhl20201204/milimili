@@ -5,8 +5,9 @@
                :disabled="item.hadHandleItem"
                :btnText="item.hadHandleItem? '已处理':'查看详情'"
                :handleOk="()=>(failVisible=false)"
+               :footer="null"
                :show="failVisible"
-               :title="item.type+item.typeId+'详情'"
+               :title="item.type+'Id'+item.typeId+'详情'"
                :changeVisible="(x)=>(failVisible=x)">
     <template #content>
       <div v-if="item.type==='video'"

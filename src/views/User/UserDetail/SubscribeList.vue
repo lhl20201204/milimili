@@ -8,7 +8,7 @@
     </a-tag>
     <a-modal v-model:visible="visible"
              :footer="null"
-             :title="type + ' list'"
+             :title="(type==='subscribes'?'关注':'粉丝') + ' 列表'"
              @ok="()=>visible=false">
       <List :list="list"
             :nullDescription="'暂时没有'+ type + '信息'">

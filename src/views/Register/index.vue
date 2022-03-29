@@ -14,17 +14,17 @@
     @finishFailed="onFinishFailed"
   >
     <a-form-item
-      label="Username"
+      label="昵称"
       name="username"
-      :rules="[{ required: true, message: 'Please input your username!' }]"
+      :rules="[{ required: true, message: '请输入你要注册的昵称!' }]"
     >
       <a-input v-model:value="formState.username" />
     </a-form-item>
 
     <a-form-item
-      label="Password"
+      label="密码"
       name="password"
-      :rules="[{ required: true, message: 'Please input your password!' }]"
+      :rules="[{ required: true, message: '请输入你要注册的密码!!' }]"
     >
       <a-input-password v-model:value="formState.password" />
     </a-form-item>
@@ -35,7 +35,7 @@
 
     <a-form-item :wrapper-col="{ offset: 8, span: 16 }">
       <a-button type="primary" html-type="submit"
-      :disabled="formState.username === '' || formState.password === ''">register</a-button>
+      :disabled="formState.username === '' || formState.password === ''">注册</a-button>
     </a-form-item>
   </a-form>
   </a-card>
